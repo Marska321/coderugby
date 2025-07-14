@@ -138,9 +138,9 @@
             apiKey: "AIzaSyBB1RmG4tMM7MdlSvxSEm4uVodcjBnupTo",
             authDomain: "python-rugby-coding.firebaseapp.com",
             projectId: "python-rugby-coding",
-            storageBucket:"python-rugby-coding.firebasestorage.app",
+            storageBucket: "python-rugby-coding.firebasestorage.app",
             messagingSenderId: "126358162035",
-            appId:"1:126358162035:web:23139b87ca2cab282ef806"
+            appId: "1:126358162035:web:23139b87ca2cab282ef806"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -206,39 +206,42 @@
 
         async function handleUserLogin(user) {
             updateUIForUser(user);
-            const userRef = doc(db, "users", user.uid);
-            const userDoc = await getDoc(userRef);
-            let userData;
+            try {
+                const userRef = doc(db, "users", user.uid);
+                const userDoc = await getDoc(userRef);
+                let userData;
 
-            if (!userDoc.exists()) {
-                appendToConsole("Welcome! Creating your player profile...");
-                const initialKnowledgeState = {};
-                Object.keys(curriculum).forEach(key => {
-                    initialKnowledgeState[key] = { mastery_probability: 0.0, last_reviewed: null };
-                });
-                // BUG FIX: Correctly derive displayName for new email/password users.
-                userData = {
-                    displayName: user.displayName || user.email.split('@')[0],
-                    email: user.email,
-                    createdAt: new Date(),
-                    xp: 0,
-                    knowledgeState: initialKnowledgeState
-                };
-                await setDoc(userRef, userData);
-            } else {
-                userData = userDoc.data();
-                appendToConsole(`Welcome back, ${userData.displayName}! Loading your training...`);
-            }
-            
-            const nextLessonId = determineNextLesson(userData.knowledgeState);
-            appendToConsole(`AI Coach determined next lesson is: ${nextLessonId}`); // Diagnostic log
-            if (nextLessonId) {
-                appendToConsole(`Loading lesson ${nextLessonId}...`); // Diagnostic log
-                loadLesson(nextLessonId);
-            } else {
-                appendToConsole("No next lesson determined. User may have completed all lessons.");
-                lessonContentEl.innerHTML = `<p class="text-green-600 font-bold">Congratulations! You have completed all available lessons!</p>`;
-                runCodeBtn.disabled = true;
+                if (!userDoc.exists()) {
+                    appendToConsole("Welcome! Creating your player profile...");
+                    const initialKnowledgeState = {};
+                    Object.keys(curriculum).forEach(key => {
+                        initialKnowledgeState[key] = { mastery_probability: 0.0, last_reviewed: null };
+                    });
+                    userData = {
+                        displayName: user.displayName || user.email.split('@')[0],
+                        email: user.email,
+                        createdAt: new Date(),
+                        xp: 0,
+                        knowledgeState: initialKnowledgeState
+                    };
+                    await setDoc(userRef, userData);
+                } else {
+                    userData = userDoc.data();
+                    appendToConsole(`Welcome back, ${userData.displayName}! Loading your training...`);
+                }
+                
+                const nextLessonId = determineNextLesson(userData.knowledgeState);
+                appendToConsole(`AI Coach determined next lesson is: ${nextLessonId || 'None'}`);
+                if (nextLessonId) {
+                    loadLesson(nextLessonId);
+                } else {
+                    lessonContentEl.innerHTML = `<p class="text-green-600 font-bold">Congratulations! You have completed all available lessons!</p>`;
+                    runCodeBtn.disabled = true;
+                }
+            } catch (error) {
+                console.error("Firestore Error:", error);
+                appendToConsole(`Error loading user profile: ${error.message}`);
+                appendToConsole(`Please check your Firestore security rules.`);
             }
         }
 
