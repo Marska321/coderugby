@@ -56,7 +56,7 @@
             background-color: #0f172a;
             color: #94a3b8;
             padding: 12px;
-            height: 200px;
+            height: 100%;
             overflow-y: auto;
             border-radius: 6px;
             white-space: pre-wrap;
@@ -105,11 +105,7 @@
                 </div>
                 <div class="flex items-center space-x-4">
                     <select id="lessonSelector" class="bg-gray-700 text-white px-3 py-2 rounded-md text-sm">
-                        <option value="1.1">Lesson 1.1 - Variables</option>
-                        <option value="1.2">Lesson 1.2 - Data Types</option>
-                        <option value="1.3" selected>Lesson 1.3 - Lists</option>
-                        <option value="1.4">Lesson 1.4 - Functions</option>
-                        <option value="2.1">Lesson 2.1 - Classes</option>
+                        <!-- Options will be populated by JavaScript -->
                     </select>
                     <button id="runCode" class="bg-rugby-green hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
                         Run Code
@@ -130,255 +126,136 @@
             </div>
 
             <!-- Middle Panel: Code Editor -->
-            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="bg-white rounded-lg shadow-md overflow-hidden flex flex-col">
                 <div class="bg-gray-800 text-white px-4 py-2 text-sm font-medium">
                     Code Editor
                 </div>
-                <textarea id="codeEditor" class="code-editor" placeholder="# Write your Python code here...
-# Use the lesson instructions on the left to guide your solution
-
-"></textarea>
+                <textarea id="codeEditor" class="code-editor" placeholder="# Write your Python code here..."></textarea>
             </div>
 
             <!-- Right Panel: Console and Test Runner -->
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <div class="h-full flex flex-col">
-                    <h3 class="text-lg font-semibold mb-4">Test Runner & Console</h3>
-                    
-                    <div class="mb-4">
-                        <h4 class="text-sm font-medium text-gray-700 mb-2">Test Case:</h4>
-                        <div id="testCase" class="bg-gray-100 p-3 rounded-md text-sm font-mono">
-                            <!-- Test case will be loaded here -->
-                        </div>
+            <div class="bg-white rounded-lg shadow-md p-6 flex flex-col">
+                <h3 class="text-lg font-semibold mb-4 text-gray-800">Test Runner & Console</h3>
+                
+                <div class="mb-4">
+                    <h4 class="text-sm font-medium text-gray-700 mb-2">Test Cases:</h4>
+                    <div id="testList" class="bg-gray-100 p-3 rounded-md text-sm font-mono space-y-2">
+                        <!-- Test cases will be loaded here -->
                     </div>
-                    
-                    <div class="flex-1">
-                        <h4 class="text-sm font-medium text-gray-700 mb-2">Console Output:</h4>
-                        <div id="consoleOutput" class="console-output">
-                            Python Rugby Academy Console
-                            Ready to run your code...
-                        </div>
+                </div>
+                
+                <div class="flex-1 flex flex-col">
+                    <h4 class="text-sm font-medium text-gray-700 mb-2">Console Output:</h4>
+                    <div id="consoleOutput" class="console-output flex-1">
+                        Python Rugby Academy Console
                     </div>
-                    
-                    <div class="mt-4 flex space-x-2">
-                        <button id="clearConsole" class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded text-sm transition-colors">
-                            Clear
-                        </button>
-                        <button id="runTests" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm transition-colors">
-                            Run Tests
-                        </button>
-                    </div>
+                </div>
+                
+                <div class="mt-4 flex space-x-2">
+                    <button id="clearConsole" class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded text-sm transition-colors">
+                        Clear
+                    </button>
                 </div>
             </div>
         </div>
     </main>
 
     <script>
-        // Curriculum Data - Complete lesson content
+        // --- Curriculum Data ---
         const curriculum = {
-            "1.1": {
-                "module": "Python Fundamentals",
-                "conceptName": "Variables and Assignment",
-                "rugbyAnalogy": "Think of variables like player jerseys. Just as each player wears a jersey with their name and number, variables are like containers that hold data with a specific name. You can change which player wears the jersey, just like you can change what data a variable holds.",
-                "masteryDefinition": "Create a variable called 'captain' and assign it the value 'Johnny Wilkinson'. Then create another variable called 'position' and assign it 'Fly-half'. Print both variables.",
-                "prerequisites": ["Basic understanding of text and numbers"],
-                "example": `# Creating variables in Python
-captain = "Martin Johnson"
-position = "Lock"
-jersey_number = 5
-
-# Printing variables
-print(f"Captain: {captain}")
-print(f"Position: {position}")
-print(f"Jersey Number: {jersey_number}")
-
-# Changing variable values
-captain = "Owen Farrell"
-position = "Fly-half"
-jersey_number = 10
-
-print(f"New Captain: {captain}")`,
-                "hint": "Remember that string values (text) need to be in quotes, while numbers don't. Use the = symbol to assign values to variables."
-            },
-            "1.2": {
-                "module": "Python Fundamentals",
-                "conceptName": "Data Types",
-                "rugbyAnalogy": "Rugby has different types of plays - scrums, lineouts, penalties, and tries. Similarly, Python has different data types: strings (text), integers (whole numbers), floats (decimal numbers), and booleans (True/False). Each type serves a different purpose in the game.",
-                "masteryDefinition": "Create variables of different data types: a string for player name, an integer for tries scored, a float for conversion percentage, and a boolean for whether the team won. Print each variable with its type.",
-                "prerequisites": ["Variables and Assignment"],
-                "example": `# Different data types in Python
-player_name = "Dan Carter"          # String
-tries_scored = 5                    # Integer
-conversion_rate = 87.5              # Float
-match_won = True                    # Boolean
-
-# Checking data types
-print(f"Player: {player_name}, Type: {type(player_name)}")
-print(f"Tries: {tries_scored}, Type: {type(tries_scored)}")
-print(f"Conversion Rate: {conversion_rate}%, Type: {type(conversion_rate)}")
-print(f"Match Won: {match_won}, Type: {type(match_won)}")`,
-                "hint": "Use quotes for strings, plain numbers for integers, decimal numbers for floats, and True/False (capitalized) for booleans. The type() function shows you what data type a variable is."
-            },
-            "1.3": {
-                "module": "Python Fundamentals",
-                "conceptName": "Lists and Indexing",
-                "rugbyAnalogy": "A rugby team lineup is like a Python list. Each player has a specific position (index) in the formation. The hooker is always at position 2, the fly-half at position 10, etc. You can access any player by their position number, add new players, or rearrange the team.",
-                "masteryDefinition": "Create a list called 'starting_fifteen' with at least 5 rugby positions. Access the third player (index 2), add a new player to the end, and print the updated list with its length.",
-                "prerequisites": ["Variables and Assignment", "Data Types"],
-                "example": `# Creating a rugby team list
-starting_fifteen = ["Loosehead Prop", "Hooker", "Tighthead Prop", "Lock", "Lock"]
-
-# Accessing list elements (remember: Python uses 0-based indexing)
-print(f"First player: {starting_fifteen[0]}")
-print(f"Third player: {starting_fifteen[2]}")
-print(f"Last player: {starting_fifteen[-1]}")
-
-# Adding players to the team
-starting_fifteen.append("Blindside Flanker")
-starting_fifteen.append("Openside Flanker")
-
-print(f"Team size: {len(starting_fifteen)}")
-print(f"Updated team: {starting_fifteen}")
-
-# Changing a player
-starting_fifteen[1] = "New Hooker"
-print(f"With new hooker: {starting_fifteen}")`,
-                "hint": "Lists use square brackets []. Remember that indexing starts at 0, so the first item is at index 0, second at index 1, etc. Use append() to add items to the end of a list."
-            },
-            "1.4": {
-                "module": "Python Fundamentals",
-                "conceptName": "Functions",
-                "rugbyAnalogy": "Functions are like set plays in rugby. Just as a team practices specific plays like 'lineout throw' or 'scrum formation', functions are reusable blocks of code that perform specific tasks. You call the play when you need it, and it executes the same way every time.",
-                "masteryDefinition": "Create a function called 'calculate_points' that takes tries, conversions, and penalties as parameters and returns the total points scored. Test it with different values.",
-                "prerequisites": ["Variables", "Data Types", "Lists"],
-                "example": `# Defining a function for rugby scoring
-def calculate_match_points(tries, conversions, penalties, drop_goals):
-    \"\"\"
-    Calculate total points in a rugby match
-    Try = 5 points, Conversion = 2 points, 
-    Penalty = 3 points, Drop Goal = 3 points
-    \"\"\"
-    total_points = (tries * 5) + (conversions * 2) + (penalties * 3) + (drop_goals * 3)
-    return total_points
-
-# Using the function
-team_tries = 3
-team_conversions = 2
-team_penalties = 4
-team_drop_goals = 1
-
-final_score = calculate_match_points(team_tries, team_conversions, team_penalties, team_drop_goals)
-print(f"Final Score: {final_score} points")
-
-# Testing with different values
-print(f"Perfect game: {calculate_match_points(5, 5, 0, 0)} points")`,
-                "hint": "Functions start with 'def' followed by the function name and parameters in parentheses. Use 'return' to send a value back. Call the function by using its name with the required arguments."
-            },
-            "2.1": {
-                "module": "Object-Oriented Programming",
-                "conceptName": "Classes and Objects",
-                "rugbyAnalogy": "A class is like a rugby team template - it defines what every team should have (players, coach, tactics). An object is an actual team created from that template. The All Blacks and England are both rugby teams (objects) but they're different instances with unique players and styles.",
-                "masteryDefinition": "Create a 'RugbyPlayer' class with attributes for name, position, and jersey_number. Include a method to introduce the player. Create two player objects and call their methods.",
-                "prerequisites": ["Variables", "Data Types", "Lists", "Functions"],
-                "example": `# Creating a rugby player class
-class RugbyPlayer:
-    def __init__(self, name, position, jersey_number):
-        self.name = name
-        self.position = position
-        self.jersey_number = jersey_number
-        self.tries_scored = 0
-    
-    def introduce(self):
-        return f"I'm {self.name}, I play {self.position} and wear jersey #{self.jersey_number}"
-    
-    def score_try(self):
-        self.tries_scored += 1
-        return f"{self.name} scored a try! Total tries: {self.tries_scored}"
-
-# Creating player objects
-jonny = RugbyPlayer("Jonny Wilkinson", "Fly-half", 10)
-martin = RugbyPlayer("Martin Johnson", "Lock", 5)
-
-# Using the objects
-print(jonny.introduce())
-print(martin.introduce())
-print(jonny.score_try())
-print(jonny.score_try())`,
-                "hint": "Classes start with 'class' keyword. The __init__ method is the constructor that runs when you create a new object. Use 'self' to refer to the current object's attributes and methods."
-            }
+          "1.1": { "module": "Core Fundamentals", "conceptName": "The print() Function", "rugbyAnalogy": "Referee's starting whistle", "masteryDefinition": "Display 'Hello, Rugby World!' to the console.", "prerequisites": [], "example": "print(\"The match is about to begin!\")", "hint": "Make sure the text you want to display is inside the parentheses and enclosed in quotes.", "tests": [ { "description": "Prints 'Hello, Rugby World!'", "test": "return __output.includes('Hello, Rugby World!')" } ] },
+          "1.2": { "module": "Core Fundamentals", "conceptName": "Variables", "rugbyAnalogy": "The scoreboard", "masteryDefinition": "Declare a variable named 'home_score' and assign it the value 10.", "prerequisites": [], "example": "away_score = 5", "hint": "Use the equals sign (=) to assign a value.", "tests": [ { "description": "'home_score' variable exists", "test": "return typeof home_score !== 'undefined'" }, { "description": "'home_score' is 10", "test": "return home_score === 10" } ] },
+          "1.3": { "module": "Core Fundamentals", "conceptName": "Data Types: Strings", "rugbyAnalogy": "Player names & team names", "masteryDefinition": "Declare a variable named 'team_name' and assign it the string 'Springboks'.", "prerequisites": ["1.2"], "example": "player_name = \"Siya Kolisi\"", "hint": "Remember to enclose the text in quotes.", "tests": [ { "description": "'team_name' variable exists", "test": "return typeof team_name !== 'undefined'" }, { "description": "'team_name' is 'Springboks'", "test": "return team_name === 'Springboks'" } ] },
+          "4.1": { "module": "Functions & Modules", "conceptName": "Defining Functions", "rugbyAnalogy": "Designing a set play like a lineout", "masteryDefinition": "Define a function named 'blow_whistle' that prints 'Match Start!'.", "prerequisites": ["3.2"], "example": "def perform_scrum():\n  print(\"Crouch, bind, set!\")", "hint": "Start with the `def` keyword, followed by the function name and parentheses `()`. The code inside must be indented.", "tests": [ { "description": "Function 'blow_whistle' exists", "test": "return typeof blow_whistle === 'function'" }, { "description": "Calling blow_whistle() prints 'Match Start!'", "test": "let temp_output = ''; const old_log = console.log; console.log = (val) => temp_output += val; blow_whistle(); console.log = old_log; return temp_output.includes('Match Start!');" } ] }
         };
 
-        // DOM Elements
-        const lessonContent = document.getElementById('lessonContent');
-        const codeEditor = document.getElementById('codeEditor');
-        const consoleOutput = document.getElementById('consoleOutput');
-        const testCase = document.getElementById('testCase');
-        const lessonSelector = document.getElementById('lessonSelector');
+        // --- DOM Elements ---
+        const lessonContentEl = document.getElementById('lessonContent');
+        const codeEditorEl = document.getElementById('codeEditor');
+        const consoleOutputEl = document.getElementById('consoleOutput');
+        const testListEl = document.getElementById('testList');
+        const lessonSelectorEl = document.getElementById('lessonSelector');
         const runCodeBtn = document.getElementById('runCode');
         const clearConsoleBtn = document.getElementById('clearConsole');
-        const runTestsBtn = document.getElementById('runTests');
 
-        // Load lesson function
+        let currentLessonId = null;
+
+        // --- Functions ---
+        function populateLessonSelector() {
+            for (const key in curriculum) {
+                const lesson = curriculum[key];
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = `Lesson ${key} - ${lesson.conceptName}`;
+                lessonSelectorEl.appendChild(option);
+            }
+        }
+
         function loadLesson(lessonId) {
+            currentLessonId = lessonId;
             const lesson = curriculum[lessonId];
             if (!lesson) {
                 console.error(`Lesson ${lessonId} not found`);
                 return;
             }
 
-            // Populate left panel with lesson content
-            lessonContent.innerHTML = `
+            lessonContentEl.innerHTML = `
                 <h2 class="text-xl font-bold text-rugby-navy mb-4">${lesson.module}</h2>
                 <h3 class="text-lg font-semibold text-gray-800 mb-3">${lesson.conceptName}</h3>
-                
                 <div class="mb-4">
                     <h4 class="text-md font-medium text-gray-700 mb-2">🏉 Rugby Analogy</h4>
                     <p class="text-gray-600 leading-relaxed">${lesson.rugbyAnalogy}</p>
                 </div>
-                
                 <div class="mb-4">
                     <h4 class="text-md font-medium text-gray-700 mb-2">🎯 Challenge</h4>
                     <p class="text-gray-800 font-medium">${lesson.masteryDefinition}</p>
                 </div>
-                
                 <div class="mb-4">
                     <h4 class="text-md font-medium text-gray-700 mb-2">📝 Example</h4>
                     <pre class="text-sm">${lesson.example}</pre>
                 </div>
-                
                 <button id="hintBtn" class="bg-rugby-gold hover:bg-yellow-500 text-gray-800 px-4 py-2 rounded-md text-sm font-medium transition-colors mb-2">
                     💡 Need a Hint?
                 </button>
                 <div id="hintContent" class="hint-content hidden">
                     <p class="text-gray-800">${lesson.hint}</p>
                 </div>
-                
                 <div class="mt-4 text-xs text-gray-500">
-                    <strong>Prerequisites:</strong> ${lesson.prerequisites.join(', ')}
+                    <strong>Prerequisites:</strong> ${lesson.prerequisites.join(', ') || 'None'}
                 </div>
             `;
-
-            // Populate right panel with test case
-            testCase.innerHTML = lesson.masteryDefinition;
-
-            // Add hint toggle functionality
+            
+            updateTestListUI(lesson.tests);
+            codeEditorEl.value = `# Solve the challenge for: ${lesson.conceptName}\n# ${lesson.masteryDefinition}\n\n`;
+            
             const hintBtn = document.getElementById('hintBtn');
             const hintContent = document.getElementById('hintContent');
-            
-            hintBtn.addEventListener('click', function() {
+            hintBtn.addEventListener('click', () => {
                 hintContent.classList.toggle('hidden');
-                hintBtn.textContent = hintContent.classList.contains('hidden') ? 
-                    '💡 Need a Hint?' : '🔍 Hide Hint';
             });
-
-            // Clear previous code
-            codeEditor.value = '';
-            
-            // Update console
             appendToConsole(`\n--- Lesson ${lessonId} loaded: ${lesson.conceptName} ---`);
         }
 
-        // Console management
+        function updateTestListUI(tests, results = []) {
+            testListEl.innerHTML = tests.map((test, index) => {
+                let statusClass = 'bg-gray-400';
+                let statusText = 'Not Run';
+                if (results[index] === true) {
+                    statusClass = 'bg-rugby-green';
+                    statusText = 'Pass';
+                } else if (results[index] === false) {
+                    statusClass = 'bg-red-500';
+                    statusText = 'Fail';
+                }
+                return `
+                    <div class="flex items-center justify-between">
+                        <span>${test.description}</span>
+                        <span class="text-xs font-bold text-white px-2 py-1 rounded-full ${statusClass}">${statusText}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
         function appendToConsole(message) {
             const timestamp = new Date().toLocaleTimeString();
             consoleOutput.textContent += `\n[${timestamp}] ${message}`;
@@ -386,132 +263,121 @@ print(jonny.score_try())`,
         }
 
         function clearConsole() {
-            consoleOutput.textContent = 'Python Rugby Academy Console\nReady to run your code...\n';
+            consoleOutput.textContent = 'Python Rugby Academy Console';
         }
 
-        // Mock Python code execution (for demonstration)
-        function runCode() {
-            const code = codeEditor.value.trim();
-            if (!code) {
-                appendToConsole('No code to run!');
-                return;
-            }
+        function runCodeAndTests() {
+            if (!currentLessonId) return;
 
-            appendToConsole('Running Python code...');
-            appendToConsole(`Code:\n${code}`);
-            
-            // Simple mock execution - in a real app, this would be more sophisticated
+            const userCode = codeEditorEl.value;
+            const lesson = curriculum[currentLessonId];
+            const testResults = [];
+            let capturedOutput = "";
+
+            appendToConsole('\n--- Running Code & Tests ---');
+
             try {
-                // Mock some common Python operations
-                if (code.includes('print(')) {
-                    const printMatches = code.match(/print\([^)]+\)/g);
-                    if (printMatches) {
-                        printMatches.forEach(statement => {
-                            const content = statement.match(/print\(([^)]+)\)/)[1];
-                            appendToConsole(`Output: ${content.replace(/['"]/g, '')}`);
-                        });
+                // VERY IMPORTANT: Using eval is insecure for production.
+                // This is for MVP demonstration ONLY. A real app would use a sandboxed
+                // environment (like a Web Worker or a server-side execution).
+                
+                // Capture console.log output
+                const oldLog = console.log;
+                console.log = (val) => capturedOutput += val + '\n';
+                
+                // This is a simplified way to evaluate code and make variables available for tests.
+                // A more robust solution would be needed for a full Python interpreter.
+                const context = {};
+                const userFunction = new Function('context', `with(context) { ${userCode} }`);
+                userFunction(context);
+
+                // Restore console.log
+                console.log = oldLog;
+
+                // Run tests
+                lesson.tests.forEach(test => {
+                    let result = false;
+                    try {
+                        // Create a test function that has access to the user's code scope
+                        // and our captured output.
+                        const testFunc = new Function('context', '__output', `with(context) { ${test.test} }`);
+                        result = testFunc(context, capturedOutput);
+                    } catch (e) {
+                        result = false;
+                        appendToConsole(`Test Error: ${e.message}`);
                     }
+                    testResults.push(!!result); // Ensure boolean result
+                });
+
+                if (capturedOutput) {
+                    appendToConsole(`Output:\n${capturedOutput.trim()}`);
                 }
-                
-                if (code.includes('=') && !code.includes('==')) {
-                    appendToConsole('Variables assigned successfully');
-                }
-                
-                if (code.includes('def ')) {
-                    appendToConsole('Function defined successfully');
-                }
-                
-                if (code.includes('class ')) {
-                    appendToConsole('Class defined successfully');
-                }
-                
-                appendToConsole('Code executed successfully! ✓');
-            } catch (error) {
-                appendToConsole(`Error: ${error.message}`);
+                appendToConsole('Execution complete.');
+
+            } catch (e) {
+                appendToConsole(`Code Error: ${e.message}`);
+                lesson.tests.forEach(() => testResults.push(false));
+            }
+            
+            updateTestListUI(lesson.tests, testResults);
+
+            if (testResults.every(res => res === true)) {
+                 appendToConsole('Great job! You\'ve mastered this concept. 🏉');
+            } else {
+                 appendToConsole('Not quite. Check the failed tests and try again.');
             }
         }
 
-        function runTests() {
-            appendToConsole('\n--- Running Tests ---');
-            const currentLesson = lessonSelector.value;
-            const lesson = curriculum[currentLesson];
-            
-            appendToConsole(`Testing: ${lesson.masteryDefinition}`);
-            appendToConsole('Mock test results: ✓ All tests passed!');
-            appendToConsole('Great job! You\'ve mastered this concept. 🏉');
-        }
-
-        // Event listeners
-        lessonSelector.addEventListener('change', function() {
-            loadLesson(this.value);
-        });
-
-        runCodeBtn.addEventListener('click', runCode);
+        // --- Event Listeners ---
+        lessonSelectorEl.addEventListener('change', (e) => loadLesson(e.target.value));
+        runCodeBtn.addEventListener('click', runCodeAndTests);
         clearConsoleBtn.addEventListener('click', clearConsole);
-        runTestsBtn.addEventListener('click', runTests);
 
         // Keyboard shortcuts
-        codeEditor.addEventListener('keydown', function(e) {
-            // Ctrl+Enter or Cmd+Enter to run code
+        codeEditorEl.addEventListener('keydown', (e) => {
             if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
                 e.preventDefault();
-                runCode();
+                runCodeAndTests();
             }
-            
-            // Tab support
             if (e.key === 'Tab') {
                 e.preventDefault();
-                const start = this.selectionStart;
-                const end = this.selectionEnd;
-                this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
-                this.selectionStart = this.selectionEnd = start + 4;
+                const start = e.target.selectionStart;
+                const end = e.target.selectionEnd;
+                e.target.value = e.target.value.substring(0, start) + '    ' + e.target.value.substring(end);
+                e.target.selectionStart = e.target.selectionEnd = start + 4;
             }
         });
 
-        // Service Worker for PWA functionality
+        // --- PWA Service Worker (Commented out to fix registration error) ---
+        // For full PWA offline functionality, this code should be moved to a separate
+        // 'sw.js' file in your project root, and you would register it with:
+        // navigator.serviceWorker.register('/sw.js')
+        /*
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
+            window.addEventListener('load', () => {
                 const swCode = `
                     const CACHE_NAME = 'python-rugby-academy-v1';
                     const urlsToCache = ['/'];
-                    
-                    self.addEventListener('install', function(event) {
-                        event.waitUntil(
-                            caches.open(CACHE_NAME)
-                                .then(function(cache) {
-                                    return cache.addAll(urlsToCache);
-                                })
-                        );
+                    self.addEventListener('install', event => {
+                        event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
                     });
-                    
-                    self.addEventListener('fetch', function(event) {
-                        event.respondWith(
-                            caches.match(event.request)
-                                .then(function(response) {
-                                    return response || fetch(event.request);
-                                })
-                        );
+                    self.addEventListener('fetch', event => {
+                        event.respondWith(caches.match(event.request).then(response => response || fetch(event.request)));
                     });
                 `;
-                
                 const blob = new Blob([swCode], { type: 'application/javascript' });
                 const swUrl = URL.createObjectURL(blob);
-                
                 navigator.serviceWorker.register(swUrl)
-                    .then(function(registration) {
-                        console.log('SW registered: ', registration);
-                    })
-                    .catch(function(registrationError) {
-                        console.log('SW registration failed: ', registrationError);
-                    });
+                    .then(reg => console.log('SW registered:', reg))
+                    .catch(err => console.log('SW registration failed:', err));
             });
         }
+        */
 
-        // Initialize app
-        document.addEventListener('DOMContentLoaded', function() {
-            loadLesson('1.3');
-            appendToConsole('Python Rugby Academy loaded successfully!');
-            appendToConsole('Select a lesson from the dropdown and start coding!');
+        // --- Initialize App ---
+        document.addEventListener('DOMContentLoaded', () => {
+            populateLessonSelector();
+            loadLesson('1.1'); // Load the first lesson by default
         });
     </script>
 </body>
