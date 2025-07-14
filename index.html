@@ -8,7 +8,7 @@
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#1f2937">
     <meta name="description" content="Learn Python programming through rugby analogies and interactive lessons">
-    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiUHl0aG9uIFJ1Z2J5IEFjYWRlbXkiLCJzaG9ydF9uYW1lIjoiUHl0aG9uUlVHQlkiLCJzdGFydF91cmwiOiIvIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiIzFmMjkzNyIsInRoZW1lX2NvbG9yIjoiIzFmMjkzNyIsImljb25zIjpbeyJzcmMiOiJkYXRhOmltYWdlL3N2Zyt4bWw7YmFzZTY0LFBITjJaeUI0Yld4dWN6MGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TUM5emRtY2lJSGRwWkhSb1BTSXlOREFpSUdobGFXZG9kRDBpTWpRd0lqNDhjbVZqZENCM2FXUjBhRDBpTWpRd0lpQm9aV2xuYUhROUlqSTBNQ0lnWm1sc2JEMGlJelJCTmpKQk1UWWlMejQ4TDNOMlp6ND0iLCJzaXplcyI6IjE5MngxOTIiLCJ0eXBlIjoiaW1hZ2Uvc3ZnK3htbCJ9XX0=">
+    <link rel="manifest" href="/manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     
@@ -103,13 +103,8 @@
                         <p class="text-gray-300 text-sm">Learn Python through rugby analogies</p>
                     </div>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <select id="lessonSelector" class="bg-gray-700 text-white px-3 py-2 rounded-md text-sm">
-                        <!-- Options will be populated by JavaScript -->
-                    </select>
-                    <button id="runCode" class="bg-rugby-green hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
-                        Run Code
-                    </button>
+                <div id="user-actions" class="flex items-center space-x-4">
+                     <!-- This will be replaced by user info or a sign-in button -->
                 </div>
             </div>
         </div>
@@ -120,6 +115,12 @@
         <div class="three-panel-layout grid grid-cols-1 md:grid-cols-3 gap-6 h-[calc(100vh-160px)]">
             <!-- Left Panel: Lesson Instructions -->
             <div class="bg-white rounded-lg shadow-md p-6 overflow-y-auto">
+                <div class="flex items-center justify-between mb-4">
+                     <h2 class="text-xl font-bold text-rugby-navy">Daily Training</h2>
+                     <select id="lessonSelector" class="bg-gray-200 text-gray-800 px-3 py-1 rounded-md text-xs">
+                        <!-- Options will be populated by JavaScript -->
+                    </select>
+                </div>
                 <div id="lessonContent" class="lesson-content">
                     <!-- Lesson content will be loaded here -->
                 </div>
@@ -152,7 +153,10 @@
                 </div>
                 
                 <div class="mt-4 flex space-x-2">
-                    <button id="clearConsole" class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded text-sm transition-colors">
+                    <button id="runCodeBtn" class="bg-rugby-green hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors flex-grow">
+                        Run Tests
+                    </button>
+                    <button id="clearConsoleBtn" class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded text-sm transition-colors">
                         Clear
                     </button>
                 </div>
@@ -160,7 +164,30 @@
         </div>
     </main>
 
-    <script>
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+        // --- Your web app's Firebase configuration ---
+        // IMPORTANT: Replace this with your own Firebase config object!
+        const firebaseConfig = {
+            apiKey:"AIzaSyBB1RmG4tMM7MdlSvxSEm4uVodcjBnupTo",
+            authDomain:  "python-rugby-coding.firebaseapp.com",
+            projectId: "python-rugby-coding",
+            storageBucket: "python-rugby-coding.firebasestorage.app",
+            messagingSenderId:  "126358162035",
+            appId:  "1:126358162035:web:23139b87ca2cab282ef806"
+        };
+
+        // --- Initialize Firebase ---
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth();
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+
         // --- Curriculum Data ---
         const curriculum = {
           "1.1": { "module": "Core Fundamentals", "conceptName": "The print() Function", "rugbyAnalogy": "Referee's starting whistle", "masteryDefinition": "Display 'Hello, Rugby World!' to the console.", "prerequisites": [], "example": "print(\"The match is about to begin!\")", "hint": "Make sure the text you want to display is inside the parentheses and enclosed in quotes.", "tests": [ { "description": "Prints 'Hello, Rugby World!'", "test": "return __output.includes('Hello, Rugby World!')" } ] },
@@ -175,12 +202,57 @@
         const consoleOutputEl = document.getElementById('consoleOutput');
         const testListEl = document.getElementById('testList');
         const lessonSelectorEl = document.getElementById('lessonSelector');
-        const runCodeBtn = document.getElementById('runCode');
-        const clearConsoleBtn = document.getElementById('clearConsole');
+        const runCodeBtn = document.getElementById('runCodeBtn');
+        const clearConsoleBtn = document.getElementById('clearConsoleBtn');
+        const userActionsEl = document.getElementById('user-actions');
 
         let currentLessonId = null;
+        let currentUser = null;
 
-        // --- Functions ---
+        // --- Authentication ---
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                currentUser = user;
+                updateUIForUser(user);
+            } else {
+                currentUser = null;
+                updateUIForGuest();
+            }
+        });
+
+        function signIn() {
+            signInWithPopup(auth, provider).catch(error => {
+                console.error("Auth Error:", error);
+                appendToConsole(`Authentication Error: ${error.message}`);
+            });
+        }
+
+        function logOut() {
+            signOut(auth);
+        }
+
+        // --- UI Updates ---
+        function updateUIForUser(user) {
+            userActionsEl.innerHTML = `
+                <div class="flex items-center space-x-4">
+                    <img src="${user.photoURL}" alt="User avatar" class="w-8 h-8 rounded-full">
+                    <span class="text-sm font-medium text-gray-300">${user.displayName}</span>
+                    <button id="signOutBtn" class="bg-rugby-gold hover:bg-yellow-500 text-gray-800 px-3 py-1 rounded text-sm font-bold transition-colors">Sign Out</button>
+                </div>
+            `;
+            document.getElementById('signOutBtn').addEventListener('click', logOut);
+        }
+
+        function updateUIForGuest() {
+            userActionsEl.innerHTML = `
+                <button id="signInBtn" class="bg-rugby-green hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                    Sign In with Google
+                </button>
+            `;
+            document.getElementById('signInBtn').addEventListener('click', signIn);
+        }
+
+        // --- Core App Logic ---
         function populateLessonSelector() {
             for (const key in curriculum) {
                 const lesson = curriculum[key];
@@ -200,7 +272,6 @@
             }
 
             lessonContentEl.innerHTML = `
-                <h2 class="text-xl font-bold text-rugby-navy mb-4">${lesson.module}</h2>
                 <h3 class="text-lg font-semibold text-gray-800 mb-3">${lesson.conceptName}</h3>
                 <div class="mb-4">
                     <h4 class="text-md font-medium text-gray-700 mb-2">🏉 Rugby Analogy</h4>
@@ -220,9 +291,6 @@
                 <div id="hintContent" class="hint-content hidden">
                     <p class="text-gray-800">${lesson.hint}</p>
                 </div>
-                <div class="mt-4 text-xs text-gray-500">
-                    <strong>Prerequisites:</strong> ${lesson.prerequisites.join(', ') || 'None'}
-                </div>
             `;
             
             updateTestListUI(lesson.tests);
@@ -230,9 +298,7 @@
             
             const hintBtn = document.getElementById('hintBtn');
             const hintContent = document.getElementById('hintContent');
-            hintBtn.addEventListener('click', () => {
-                hintContent.classList.toggle('hidden');
-            });
+            hintBtn.addEventListener('click', () => hintContent.classList.toggle('hidden'));
             appendToConsole(`\n--- Lesson ${lessonId} loaded: ${lesson.conceptName} ---`);
         }
 
@@ -258,69 +324,46 @@
 
         function appendToConsole(message) {
             const timestamp = new Date().toLocaleTimeString();
-            consoleOutput.textContent += `\n[${timestamp}] ${message}`;
-            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+            consoleOutputEl.textContent += `\n[${timestamp}] ${message}`;
+            consoleOutputEl.scrollTop = consoleOutputEl.scrollHeight;
         }
 
         function clearConsole() {
-            consoleOutput.textContent = 'Python Rugby Academy Console';
+            consoleOutputEl.textContent = 'Python Rugby Academy Console';
         }
 
         function runCodeAndTests() {
             if (!currentLessonId) return;
-
             const userCode = codeEditorEl.value;
             const lesson = curriculum[currentLessonId];
             const testResults = [];
             let capturedOutput = "";
-
             appendToConsole('\n--- Running Code & Tests ---');
-
             try {
-                // VERY IMPORTANT: Using eval is insecure for production.
-                // This is for MVP demonstration ONLY. A real app would use a sandboxed
-                // environment (like a Web Worker or a server-side execution).
-                
-                // Capture console.log output
+                const context = {};
                 const oldLog = console.log;
                 console.log = (val) => capturedOutput += val + '\n';
-                
-                // This is a simplified way to evaluate code and make variables available for tests.
-                // A more robust solution would be needed for a full Python interpreter.
-                const context = {};
                 const userFunction = new Function('context', `with(context) { ${userCode} }`);
                 userFunction(context);
-
-                // Restore console.log
                 console.log = oldLog;
-
-                // Run tests
                 lesson.tests.forEach(test => {
                     let result = false;
                     try {
-                        // Create a test function that has access to the user's code scope
-                        // and our captured output.
                         const testFunc = new Function('context', '__output', `with(context) { ${test.test} }`);
                         result = testFunc(context, capturedOutput);
                     } catch (e) {
                         result = false;
                         appendToConsole(`Test Error: ${e.message}`);
                     }
-                    testResults.push(!!result); // Ensure boolean result
+                    testResults.push(!!result);
                 });
-
-                if (capturedOutput) {
-                    appendToConsole(`Output:\n${capturedOutput.trim()}`);
-                }
+                if (capturedOutput) appendToConsole(`Output:\n${capturedOutput.trim()}`);
                 appendToConsole('Execution complete.');
-
             } catch (e) {
                 appendToConsole(`Code Error: ${e.message}`);
                 lesson.tests.forEach(() => testResults.push(false));
             }
-            
             updateTestListUI(lesson.tests, testResults);
-
             if (testResults.every(res => res === true)) {
                  appendToConsole('Great job! You\'ve mastered this concept. 🏉');
             } else {
@@ -332,8 +375,6 @@
         lessonSelectorEl.addEventListener('change', (e) => loadLesson(e.target.value));
         runCodeBtn.addEventListener('click', runCodeAndTests);
         clearConsoleBtn.addEventListener('click', clearConsole);
-
-        // Keyboard shortcuts
         codeEditorEl.addEventListener('keydown', (e) => {
             if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
                 e.preventDefault();
@@ -348,16 +389,14 @@
             }
         });
 
-      // --- PWA Service Worker ---
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js') // Register the new file
-            .then(reg => console.log('SW registered:', reg))
-            .catch(err => console.log('SW registration failed:', err));
-    });
-}
+        // --- PWA Service Worker ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('SW registered:', reg))
+                    .catch(err => console.log('SW registration failed:', err));
+            });
         }
-        */
 
         // --- Initialize App ---
         document.addEventListener('DOMContentLoaded', () => {
