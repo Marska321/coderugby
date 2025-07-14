@@ -348,29 +348,14 @@
             }
         });
 
-        // --- PWA Service Worker (Commented out to fix registration error) ---
-        // For full PWA offline functionality, this code should be moved to a separate
-        // 'sw.js' file in your project root, and you would register it with:
-        // navigator.serviceWorker.register('/sw.js')
-        /*
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                const swCode = `
-                    const CACHE_NAME = 'python-rugby-academy-v1';
-                    const urlsToCache = ['/'];
-                    self.addEventListener('install', event => {
-                        event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
-                    });
-                    self.addEventListener('fetch', event => {
-                        event.respondWith(caches.match(event.request).then(response => response || fetch(event.request)));
-                    });
-                `;
-                const blob = new Blob([swCode], { type: 'application/javascript' });
-                const swUrl = URL.createObjectURL(blob);
-                navigator.serviceWorker.register(swUrl)
-                    .then(reg => console.log('SW registered:', reg))
-                    .catch(err => console.log('SW registration failed:', err));
-            });
+      // --- PWA Service Worker ---
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js') // Register the new file
+            .then(reg => console.log('SW registered:', reg))
+            .catch(err => console.log('SW registration failed:', err));
+    });
+}
         }
         */
 
