@@ -135,24 +135,27 @@
         import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyBB1RmG4tMM7MdlSvxSEm4uVodcjBnupTo",
-            authDomain: "python-rugby-coding.firebaseapp.com",
-            projectId: "python-rugby-coding",
-            storageBucket: "python-rugby-coding.firebasestorage.app",
-            messagingSenderId: "126358162035",
-            appId: "1:126358162035:web:23139b87ca2cab282ef806"
-        };
+  apiKey: "AIzaSyBB1RmG4tMM7MdlSvxSEm4uVodcjBnupTo",
+  authDomain: "python-rugby-coding.firebaseapp.com",
+  projectId: "python-rugby-coding",
+  storageBucket: "python-rugby-coding.firebasestorage.app",
+  messagingSenderId: "126358162035",
+  appId: "1:126358162035:web:23139b87ca2cab282ef806"
+};
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth();
         const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
 
+        // --- FULL CURRICULUM DATA ---
         const curriculum = {
-          "1.1": { "module": "Core Fundamentals", "conceptName": "The print() Function", "prerequisites": [], "example": "print(\"The match is about to begin!\")", "hint": "Make sure the text you want to display is inside the parentheses and enclosed in quotes.", "tests": [ { "description": "Prints 'Hello, Rugby World!'", "test": "assert 'Hello, Rugby World!' in __output, 'The correct string was not printed'" } ] },
-          "1.2": { "module": "Core Fundamentals", "conceptName": "Variables", "prerequisites": ["1.1"], "example": "away_score = 5", "hint": "Use the equals sign (=) to assign a value.", "tests": [ { "description": "'home_score' variable exists", "test": "assert 'home_score' in globals(), 'The variable home_score was not defined'" }, { "description": "'home_score' is 10", "test": "assert home_score == 10, f'Expected home_score to be 10, but got {home_score}'" } ] },
-          "1.3": { "module": "Core Fundamentals", "conceptName": "Data Types: Strings", "prerequisites": ["1.2"], "example": "player_name = \"Siya Kolisi\"", "hint": "Remember to enclose the text in quotes.", "tests": [ { "description": "'team_name' variable exists", "test": "assert 'team_name' in globals()" }, { "description": "'team_name' is 'Springboks'", "test": "assert team_name == 'Springboks'" } ] },
-          "2.1": { "module": "Data Structures", "conceptName": "Lists", "prerequisites": ["1.3"], "example": "forwards = [\"Ox Nche\", \"Bongi Mbonambi\"]", "hint": "Use square brackets `[]` to create a list.", "tests": [ { "description": "List 'forwards' exists", "test": "assert 'forwards' in globals() and isinstance(forwards, list)" } ] }
+          "1.1": { "module": "Core Fundamentals", "conceptName": "The print() Function", "rugbyAnalogy": "Referee's starting whistle", "masteryDefinition": "Display 'Hello, Rugby World!' to the console.", "prerequisites": [], "example": "print(\"The match is about to begin!\")", "hint": "Make sure the text you want to display is inside the parentheses and enclosed in quotes.", "tests": [ { "description": "Prints 'Hello, Rugby World!'", "test": "assert 'Hello, Rugby World!' in __output, 'The correct string was not printed'" } ] },
+          "1.2": { "module": "Core Fundamentals", "conceptName": "Variables", "rugbyAnalogy": "The scoreboard", "masteryDefinition": "Declare a variable named 'home_score' and assign it the value 10.", "prerequisites": ["1.1"], "example": "away_score = 5", "hint": "Use the equals sign (=) to assign a value.", "tests": [ { "description": "'home_score' variable exists", "test": "assert 'home_score' in globals(), 'The variable home_score was not defined'" }, { "description": "'home_score' is 10", "test": "assert home_score == 10, f'Expected home_score to be 10, but got {home_score}'" } ] },
+          "1.3": { "module": "Core Fundamentals", "conceptName": "Data Types: Strings", "rugbyAnalogy": "Player names & team names", "masteryDefinition": "Declare a variable named 'team_name' and assign it the string 'Springboks'.", "prerequisites": ["1.2"], "example": "player_name = \"Siya Kolisi\"", "hint": "Remember to enclose the text in quotes.", "tests": [ { "description": "'team_name' variable exists", "test": "assert 'team_name' in globals()" }, { "description": "'team_name' is 'Springboks'", "test": "assert team_name == 'Springboks'" } ] },
+          "1.4": { "module": "Core Fundamentals", "conceptName": "Data Types: Numbers", "rugbyAnalogy": "Points scored & time on the clock", "masteryDefinition": "Create a variable 'tries' with value 3 and 'conversion_rate' with value 85.5.", "prerequisites": ["1.2"], "example": "tries_scored = 4\nkick_accuracy_percent = 85.5", "hint": "Integers are whole numbers. Floats have a decimal point.", "tests": [ { "description": "'tries' is 3", "test": "assert tries == 3" }, { "description": "'conversion_rate' is 85.5", "test": "assert conversion_rate == 85.5" } ] },
+          "1.5": { "module": "Core Fundamentals", "conceptName": "Data Types: Booleans", "rugbyAnalogy": "A try is scored (True) or not (False)", "masteryDefinition": "Create a variable 'is_match_over' and set it to False.", "prerequisites": ["1.2"], "example": "is_raining = False", "hint": "Boolean values must be capitalized in Python: `True` and `False`.", "tests": [ { "description": "'is_match_over' is False", "test": "assert is_match_over == False" } ] },
+          "2.1": { "module": "Data Structures", "conceptName": "Lists", "prerequisites": ["1.3", "1.4"], "rugbyAnalogy": "The team roster sheet", "masteryDefinition": "Create a list named 'forwards' with at least two player names.", "example": "backs = [\"Faf de Klerk\", \"Cheslin Kolbe\"]", "hint": "Use square brackets `[]` to create a list, and separate each string with a comma.", "tests": [ { "description": "List 'forwards' exists and is a list", "test": "assert 'forwards' in globals() and isinstance(forwards, list)" }, { "description": "'forwards' has at least 2 players", "test": "assert len(forwards) >= 2" } ] }
         };
 
         const lessonContentEl = document.getElementById('lessonContent');
@@ -382,6 +385,26 @@
                  appendToConsole('Not quite. Check the failed tests and try again.');
             }
             runCodeBtn.disabled = false;
+        }
+
+        async function saveProgress(lessonId) {
+            if (!currentUser) return;
+            const userRef = doc(db, "users", currentUser.uid);
+            const fieldToUpdate = `knowledgeState.${lessonId}.mastery_probability`;
+            try {
+                await updateDoc(userRef, { [fieldToUpdate]: 1.0 });
+                appendToConsole(`Progress saved for lesson ${lessonId}! 🏉`);
+                const userDoc = await getDoc(userRef);
+                const nextLessonId = determineNextLesson(userDoc.data().knowledgeState);
+                if (nextLessonId) {
+                    loadLesson(nextLessonId);
+                } else {
+                    lessonContentEl.innerHTML = `<p class="text-green-600 font-bold">Congratulations! You have completed all available lessons!</p>`;
+                    runCodeBtn.disabled = true;
+                }
+            } catch (error) {
+                console.error("Error saving progress: ", error);
+            }
         }
 
         async function showProgressGraph() {
