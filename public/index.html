@@ -39,63 +39,12 @@
     </script>
     
     <style>
-        /* Custom styles for code editor */
-        .code-editor {
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            font-size: 14px;
-            line-height: 1.5;
-            background-color: #1e293b;
-            color: #e2e8f0;
-            border: none;
-            outline: none;
-            resize: none;
-            width: 100%;
-            height: 100%;
-            padding: 16px;
-            tab-size: 4;
-        }
-        
-        .console-output {
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            font-size: 13px;
-            line-height: 1.4;
-            background-color: #0f172a;
-            color: #94a3b8;
-            padding: 12px;
-            height: 100%;
-            overflow-y: auto;
-            border-radius: 6px;
-            white-space: pre-wrap;
-        }
-        
-        .lesson-content pre {
-            background-color: #1e293b;
-            color: #e2e8f0;
-            padding: 16px;
-            border-radius: 8px;
-            overflow-x: auto;
-            font-size: 14px;
-            margin: 16px 0;
-        }
-        
-        .hint-content {
-            background-color: #fef3c7;
-            border-left: 4px solid #f59e0b;
-            padding: 12px;
-            margin: 12px 0;
-            border-radius: 0 6px 6px 0;
-        }
-        
-        /* Responsive grid layout */
-        @media (max-width: 768px) {
-            .three-panel-layout {
-                grid-template-columns: 1fr;
-                grid-template-rows: auto auto 1fr;
-            }
-        }
-        #progressGraph {
-            height: 80vh;
-        }
+        .code-editor { font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; background-color: #1e293b; color: #e2e8f0; border: none; outline: none; resize: none; width: 100%; height: 100%; padding: 16px; tab-size: 4; }
+        .console-output { font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 13px; line-height: 1.4; background-color: #0f172a; color: #94a3b8; padding: 12px; height: 100%; overflow-y: auto; border-radius: 6px; white-space: pre-wrap; }
+        .lesson-content pre { background-color: #1e293b; color: #e2e8f0; padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 14px; margin: 16px 0; }
+        .hint-content { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px; margin: 12px 0; border-radius: 0 6px 6px 0; }
+        @media (max-width: 768px) { .three-panel-layout { grid-template-columns: 1fr; grid-template-rows: auto auto 1fr; } }
+        #progressGraph { height: 80vh; }
     </style>
 </head>
 <body class="bg-gray-50 font-sans">
@@ -104,17 +53,13 @@
         <div class="container mx-auto px-4 py-4">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-rugby-green rounded-full flex items-center justify-center">
-                        <span class="text-white font-bold text-lg">🏉</span>
-                    </div>
+                    <div class="w-10 h-10 bg-rugby-green rounded-full flex items-center justify-center"> <span class="text-white font-bold text-lg">🏉</span> </div>
                     <div>
                         <h1 class="text-2xl font-bold">Python Rugby Academy</h1>
                         <p class="text-gray-300 text-sm">Learn Python through rugby analogies</p>
                     </div>
                 </div>
-                <div id="user-actions" class="flex items-center space-x-4">
-                     <!-- This will be replaced by user info or a sign-in button -->
-                </div>
+                <div id="user-actions" class="flex items-center space-x-4"></div>
             </div>
         </div>
     </header>
@@ -122,60 +67,62 @@
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-6">
         <div class="three-panel-layout grid grid-cols-1 md:grid-cols-3 gap-6 h-[calc(100vh-160px)]">
-            <!-- Left Panel: Lesson Instructions -->
             <div class="bg-white rounded-lg shadow-md p-6 overflow-y-auto">
-                <div class="flex items-center justify-between mb-4">
-                     <h2 class="text-xl font-bold text-rugby-navy">Daily Training</h2>
-                </div>
-                <div id="lessonContent" class="lesson-content">
-                    <p class="text-gray-600">Please sign in to get your personalized daily training lesson.</p>
-                </div>
+                <div class="flex items-center justify-between mb-4"> <h2 class="text-xl font-bold text-rugby-navy">Daily Training</h2> </div>
+                <div id="lessonContent" class="lesson-content"> <p class="text-gray-600">Please sign in to get your personalized daily training lesson.</p> </div>
             </div>
-
-            <!-- Middle Panel: Code Editor -->
             <div class="bg-white rounded-lg shadow-md overflow-hidden flex flex-col">
-                <div class="bg-gray-800 text-white px-4 py-2 text-sm font-medium">
-                    Code Editor
-                </div>
+                <div class="bg-gray-800 text-white px-4 py-2 text-sm font-medium"> Code Editor </div>
                 <textarea id="codeEditor" class="code-editor" placeholder="# Sign in and load a lesson to start coding..."></textarea>
             </div>
-
-            <!-- Right Panel: Console and Test Runner -->
             <div class="bg-white rounded-lg shadow-md p-6 flex flex-col">
                 <h3 class="text-lg font-semibold mb-4 text-gray-800">Test Runner & Console</h3>
-                
                 <div class="mb-4">
                     <h4 class="text-sm font-medium text-gray-700 mb-2">Test Cases:</h4>
-                    <div id="testList" class="bg-gray-100 p-3 rounded-md text-sm font-mono space-y-2">
-                        <!-- Test cases will be loaded here -->
-                    </div>
+                    <div id="testList" class="bg-gray-100 p-3 rounded-md text-sm font-mono space-y-2"></div>
                 </div>
-                
                 <div class="flex-1 flex flex-col">
                     <h4 class="text-sm font-medium text-gray-700 mb-2">Console Output:</h4>
-                    <div id="consoleOutput" class="console-output flex-1">
-                        Python Rugby Academy Console
-                    </div>
+                    <div id="consoleOutput" class="console-output flex-1"> Python Rugby Academy Console </div>
                 </div>
-                
                 <div class="mt-4 flex space-x-2">
-                    <button id="runCodeBtn" class="bg-rugby-green hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors flex-grow disabled:opacity-50" disabled>
-                        Run Tests
-                    </button>
-                    <button id="clearConsoleBtn" class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded text-sm transition-colors">
-                        Clear
-                    </button>
+                    <button id="runCodeBtn" class="bg-rugby-green hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors flex-grow disabled:opacity-50" disabled> Run Tests </button>
+                    <button id="clearConsoleBtn" class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded text-sm transition-colors"> Clear </button>
                 </div>
             </div>
         </div>
     </main>
 
+    <!-- Auth Modal -->
+    <div id="authModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-sm">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 id="authTitle" class="text-2xl font-bold text-rugby-navy">Login</h2>
+                    <button id="closeAuthModalBtn" class="text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+                </div>
+                <div id="authError" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-3 text-sm rounded-md mb-4 hidden"></div>
+                <form id="authForm" class="space-y-4">
+                    <input id="authEmail" type="email" placeholder="Email Address" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-rugby-green" required>
+                    <input id="authPassword" type="password" placeholder="Password" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-rugby-green" required>
+                    <button id="authSubmitBtn" type="submit" class="w-full bg-rugby-green hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md transition duration-200">Login</button>
+                </form>
+                <div class="my-4 text-center text-gray-500">or</div>
+                <button id="googleSignInBtn" class="w-full bg-white border border-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-md flex items-center justify-center space-x-2 hover:bg-gray-50">
+                    <svg class="w-5 h-5" viewBox="0 0 48 48"><path fill="#4285F4" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"></path><path fill="#34A853" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C16.318 4 9.656 8.337 6.306 14.691z"></path><path fill="#FBBC05" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"></path><path fill="#EA4335" d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.087 5.571l6.19 5.238C42.012 36.49 44 30.861 44 24c0-1.341-.138-2.65-.389-3.917z"></path></svg>
+                    <span>Sign in with Google</span>
+                </button>
+                <p id="authToggle" class="mt-6 text-center text-sm">Don't have an account? <a href="#" class="font-medium text-rugby-green hover:underline">Sign Up</a></p>
+            </div>
+        </div>
+    </div>
+    
     <!-- Progress Graph Modal -->
     <div id="progressModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl">
             <div class="p-4 border-b flex justify-between items-center">
                 <h2 class="text-xl font-bold text-rugby-navy">My Knowledge Graph</h2>
-                <button id="closeModalBtn" class="text-gray-500 hover:text-gray-800">&times;</button>
+                <button id="closeProgressModalBtn" class="text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
             </div>
             <div id="progressGraph" class="p-4"></div>
         </div>
@@ -183,28 +130,24 @@
 
     <!-- Firebase SDK -->
     <script type="module">
-        // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
-        // --- Your web app's Firebase configuration ---
         const firebaseConfig = {
             apiKey: "AIzaSyBB1RmG4tMM7MdlSvxSEm4uVodcjBnupTo",
             authDomain: "python-rugby-coding.firebaseapp.com",
             projectId: "python-rugby-coding",
             storageBucket: "python-rugby-coding.firebasestorage.app",
-            messagingSenderId:  "126358162035",
+            messagingSenderId: "126358162035",
             appId: "1:126358162035:web:23139b87ca2cab282ef806"
         };
 
-        // --- Initialize Firebase ---
         const app = initializeApp(firebaseConfig);
         const auth = getAuth();
         const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
 
-        // --- Curriculum Data ---
         const curriculum = {
           "1.1": { "module": "Core Fundamentals", "conceptName": "The print() Function", "prerequisites": [], "example": "print(\"The match is about to begin!\")", "hint": "Make sure the text you want to display is inside the parentheses and enclosed in quotes.", "tests": [ { "description": "Prints 'Hello, Rugby World!'", "test": "assert 'Hello, Rugby World!' in __output, 'The correct string was not printed'" } ] },
           "1.2": { "module": "Core Fundamentals", "conceptName": "Variables", "prerequisites": ["1.1"], "example": "away_score = 5", "hint": "Use the equals sign (=) to assign a value.", "tests": [ { "description": "'home_score' variable exists", "test": "assert 'home_score' in globals(), 'The variable home_score was not defined'" }, { "description": "'home_score' is 10", "test": "assert home_score == 10, f'Expected home_score to be 10, but got {home_score}'" } ] },
@@ -212,7 +155,6 @@
           "2.1": { "module": "Data Structures", "conceptName": "Lists", "prerequisites": ["1.3"], "example": "forwards = [\"Ox Nche\", \"Bongi Mbonambi\"]", "hint": "Use square brackets `[]` to create a list.", "tests": [ { "description": "List 'forwards' exists", "test": "assert 'forwards' in globals() and isinstance(forwards, list)" } ] }
         };
 
-        // --- DOM Elements ---
         const lessonContentEl = document.getElementById('lessonContent');
         const codeEditorEl = document.getElementById('codeEditor');
         const consoleOutputEl = document.getElementById('consoleOutput');
@@ -221,26 +163,41 @@
         const clearConsoleBtn = document.getElementById('clearConsoleBtn');
         const userActionsEl = document.getElementById('user-actions');
         const progressModalEl = document.getElementById('progressModal');
-        const closeModalBtn = document.getElementById('closeModalBtn');
+        const closeProgressModalBtn = document.getElementById('closeProgressModalBtn');
         const progressGraphEl = document.getElementById('progressGraph');
+        const authModalEl = document.getElementById('authModal');
+        const closeAuthModalBtn = document.getElementById('closeAuthModalBtn');
+        const authForm = document.getElementById('authForm');
+        const authEmailEl = document.getElementById('authEmail');
+        const authPasswordEl = document.getElementById('authPassword');
+        const authTitleEl = document.getElementById('authTitle');
+        const authSubmitBtn = document.getElementById('authSubmitBtn');
+        const authToggleEl = document.getElementById('authToggle');
+        const googleSignInBtn = document.getElementById('googleSignInBtn');
+        const authErrorEl = document.getElementById('authError');
 
         let currentLessonId = null;
         let currentUser = null;
         let pyodide = null;
+        let isLoginMode = true;
 
-        // --- Pyodide Initialization ---
         async function main() {
             appendToConsole("Initializing Python environment...");
-            pyodide = await loadPyodide();
-            appendToConsole("Python environment ready. 🐍");
+            try {
+                pyodide = await loadPyodide();
+                appendToConsole("Python environment ready. 🐍");
+            } catch (error) {
+                appendToConsole("Error initializing Python environment. Some features may not work.");
+                console.error(error);
+            }
         }
         main();
 
-        // --- Authentication & User Data ---
         onAuthStateChanged(auth, user => {
             if (user) {
                 currentUser = user;
                 handleUserLogin(user);
+                authModalEl.classList.add('hidden');
             } else {
                 currentUser = null;
                 updateUIForGuest();
@@ -260,13 +217,16 @@
                     initialKnowledgeState[key] = { mastery_probability: 0.0, last_reviewed: null };
                 });
                 userData = {
-                    displayName: user.displayName, email: user.email, createdAt: new Date(), xp: 0,
+                    displayName: user.displayName || user.email.split('@')[0],
+                    email: user.email,
+                    createdAt: new Date(),
+                    xp: 0,
                     knowledgeState: initialKnowledgeState
                 };
                 await setDoc(userRef, userData);
             } else {
                 userData = userDoc.data();
-                appendToConsole(`Welcome back, ${user.displayName}! Loading your training...`);
+                appendToConsole(`Welcome back, ${userData.displayName}! Loading your training...`);
             }
             
             const nextLessonId = determineNextLesson(userData.knowledgeState);
@@ -278,35 +238,69 @@
             }
         }
 
-        function signIn() {
-            signInWithPopup(auth, provider).catch(error => console.error("Auth Error:", error));
+        function signInWithGoogle() {
+            signInWithPopup(auth, provider).catch(error => showAuthError(error.message));
         }
 
-        function logOut() {
-            signOut(auth);
-        }
+        function handleAuthFormSubmit(e) {
+            e.preventDefault();
+            const email = authEmailEl.value;
+            const password = authPasswordEl.value;
+            authErrorEl.classList.add('hidden');
 
-        async function saveProgress(lessonId) {
-            if (!currentUser) return;
-            const userRef = doc(db, "users", currentUser.uid);
-            const fieldToUpdate = `knowledgeState.${lessonId}.mastery_probability`;
-            try {
-                await updateDoc(userRef, { [fieldToUpdate]: 1.0 });
-                appendToConsole(`Progress saved for lesson ${lessonId}! 🏉`);
-                const userDoc = await getDoc(userRef);
-                const nextLessonId = determineNextLesson(userDoc.data().knowledgeState);
-                if (nextLessonId) {
-                    loadLesson(nextLessonId);
-                } else {
-                    lessonContentEl.innerHTML = `<p class="text-green-600 font-bold">Congratulations! You have completed all available lessons!</p>`;
-                    runCodeBtn.disabled = true;
-                }
-            } catch (error) {
-                console.error("Error saving progress: ", error);
+            if (isLoginMode) {
+                signInWithEmailAndPassword(auth, email, password)
+                    .catch(error => showAuthError(error.message));
+            } else {
+                createUserWithEmailAndPassword(auth, email, password)
+                    .catch(error => showAuthError(error.message));
             }
         }
 
-        // --- AI Head Coach Logic ---
+        function toggleAuthMode() {
+            isLoginMode = !isLoginMode;
+            authTitleEl.textContent = isLoginMode ? "Login" : "Sign Up";
+            authSubmitBtn.textContent = isLoginMode ? "Login" : "Sign Up";
+            authToggleEl.innerHTML = isLoginMode 
+                ? `Don't have an account? <a href="#" class="font-medium text-rugby-green hover:underline">Sign Up</a>`
+                : `Already have an account? <a href="#" class="font-medium text-rugby-green hover:underline">Login</a>`;
+            authErrorEl.classList.add('hidden');
+        }
+        
+        function showAuthError(message) {
+            authErrorEl.textContent = message;
+            authErrorEl.classList.remove('hidden');
+        }
+
+        function updateUIForUser(user) {
+            const displayName = user.displayName || user.email.split('@')[0];
+            userActionsEl.innerHTML = `
+                <div class="flex items-center space-x-4">
+                    <button id="progressBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm font-medium transition-colors">My Progress</button>
+                    <span class="text-sm font-medium text-gray-300">Welcome, ${displayName}</span>
+                    <button id="signOutBtn" class="bg-rugby-gold hover:bg-yellow-500 text-gray-800 px-3 py-1 rounded text-sm font-bold transition-colors">Sign Out</button>
+                </div>
+            `;
+            document.getElementById('signOutBtn').addEventListener('click', () => signOut(auth));
+            document.getElementById('progressBtn').addEventListener('click', showProgressGraph);
+        }
+
+        function updateUIForGuest() {
+            userActionsEl.innerHTML = `
+                <button id="authTriggerBtn" class="bg-rugby-green hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                    Login / Sign Up
+                </button>
+            `;
+            document.getElementById('authTriggerBtn').addEventListener('click', () => {
+                authModalEl.classList.remove('hidden');
+                authModalEl.classList.add('flex');
+            });
+            lessonContentEl.innerHTML = `<p class="text-gray-600">Please sign in to get your personalized daily training lesson.</p>`;
+            testListEl.innerHTML = '';
+            codeEditorEl.value = '';
+            runCodeBtn.disabled = true;
+        }
+
         function determineNextLesson(knowledgeState) {
             for (const lessonId in curriculum) {
                 if (knowledgeState[lessonId].mastery_probability < 1.0) {
@@ -314,60 +308,20 @@
                     const prerequisitesMet = lesson.prerequisites.every(prereqId => 
                         knowledgeState[prereqId] && knowledgeState[prereqId].mastery_probability === 1.0
                     );
-                    if (prerequisitesMet) {
-                        return lessonId;
-                    }
+                    if (prerequisitesMet) return lessonId;
                 }
             }
             return null;
         }
 
-        // --- UI Updates ---
-        function updateUIForUser(user) {
-            userActionsEl.innerHTML = `
-                <div class="flex items-center space-x-4">
-                    <button id="progressBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm font-medium transition-colors">My Progress</button>
-                    <img src="${user.photoURL}" alt="User avatar" class="w-8 h-8 rounded-full">
-                    <span class="text-sm font-medium text-gray-300">${user.displayName}</span>
-                    <button id="signOutBtn" class="bg-rugby-gold hover:bg-yellow-500 text-gray-800 px-3 py-1 rounded text-sm font-bold transition-colors">Sign Out</button>
-                </div>
-            `;
-            document.getElementById('signOutBtn').addEventListener('click', logOut);
-            document.getElementById('progressBtn').addEventListener('click', showProgressGraph);
-        }
-
-        function updateUIForGuest() {
-            userActionsEl.innerHTML = `
-                <button id="signInBtn" class="bg-rugby-green hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
-                    Sign In with Google
-                </button>
-            `;
-            document.getElementById('signInBtn').addEventListener('click', signIn);
-            lessonContentEl.innerHTML = `<p class="text-gray-600">Please sign in to get your personalized daily training lesson.</p>`;
-            testListEl.innerHTML = '';
-            codeEditorEl.value = '';
-            runCodeBtn.disabled = true;
-        }
-
-        // --- Core App Logic ---
         function loadLesson(lessonId) {
             currentLessonId = lessonId;
             const lesson = curriculum[lessonId];
             if (!lesson) return;
-
-            lessonContentEl.innerHTML = `
-                <h3 class="text-lg font-semibold text-gray-800 mb-3">${lesson.conceptName}</h3>
-                <div class="mb-4"><h4 class="text-md font-medium text-gray-700 mb-2">🏉 Rugby Analogy</h4><p class="text-gray-600 leading-relaxed">${lesson.rugbyAnalogy}</p></div>
-                <div class="mb-4"><h4 class="text-md font-medium text-gray-700 mb-2">🎯 Challenge</h4><p class="text-gray-800 font-medium">${lesson.masteryDefinition}</p></div>
-                <div class="mb-4"><h4 class="text-md font-medium text-gray-700 mb-2">📝 Example</h4><pre class="text-sm">${lesson.example}</pre></div>
-                <button id="hintBtn" class="bg-rugby-gold hover:bg-yellow-500 text-gray-800 px-4 py-2 rounded-md text-sm font-medium transition-colors mb-2">💡 Need a Hint?</button>
-                <div id="hintContent" class="hint-content hidden"><p class="text-gray-800">${lesson.hint}</p></div>
-            `;
-            
+            lessonContentEl.innerHTML = `<h3 class="text-lg font-semibold text-gray-800 mb-3">${lesson.conceptName}</h3><div class="mb-4"><h4 class="text-md font-medium text-gray-700 mb-2">🏉 Rugby Analogy</h4><p class="text-gray-600 leading-relaxed">${lesson.rugbyAnalogy}</p></div><div class="mb-4"><h4 class="text-md font-medium text-gray-700 mb-2">🎯 Challenge</h4><p class="text-gray-800 font-medium">${lesson.masteryDefinition}</p></div><div class="mb-4"><h4 class="text-md font-medium text-gray-700 mb-2">📝 Example</h4><pre class="text-sm">${lesson.example}</pre></div><button id="hintBtn" class="bg-rugby-gold hover:bg-yellow-500 text-gray-800 px-4 py-2 rounded-md text-sm font-medium transition-colors mb-2">💡 Need a Hint?</button><div id="hintContent" class="hint-content hidden"><p class="text-gray-800">${lesson.hint}</p></div>`;
             updateTestListUI(lesson.tests);
             codeEditorEl.value = `# Solve the challenge for: ${lesson.conceptName}\n\n`;
             runCodeBtn.disabled = false;
-            
             document.getElementById('hintBtn').addEventListener('click', () => document.getElementById('hintContent').classList.toggle('hidden'));
             appendToConsole(`\n--- Lesson ${lessonId} loaded: ${lesson.conceptName} ---`);
         }
@@ -387,23 +341,13 @@
             consoleOutputEl.scrollTop = consoleOutputEl.scrollHeight;
         }
 
-        function clearConsole() {
-            consoleOutputEl.textContent = 'Python Rugby Academy Console';
-        }
-
         async function runCodeAndTests() {
-            if (!pyodide || !currentLessonId) {
-                appendToConsole("Environment not ready. Please wait.");
-                return;
-            }
-            
+            if (!pyodide || !currentLessonId) { appendToConsole("Environment not ready."); return; }
             runCodeBtn.disabled = true;
             appendToConsole('\n--- Running Code & Tests ---');
-
             const userCode = codeEditorEl.value;
             const lesson = curriculum[currentLessonId];
             const testResults = [];
-            
             try {
                 let capturedOutput = "";
                 pyodide.globals.set("print", (s) => { capturedOutput += s + "\n"; });
@@ -419,14 +363,11 @@
                     }
                 }
                 if (capturedOutput) appendToConsole(`Output:\n${capturedOutput.trim()}`);
-                appendToConsole('Execution complete.');
             } catch (e) {
                 appendToConsole(`Code Error: ${e.message}`);
                 lesson.tests.forEach(() => testResults.push(false));
             }
-            
             updateTestListUI(lesson.tests, testResults);
-            
             if (testResults.every(res => res === true)) {
                  appendToConsole('Great job! You\'ve mastered this concept. 🏉');
                  saveProgress(currentLessonId);
@@ -436,93 +377,54 @@
             runCodeBtn.disabled = false;
         }
 
-        // --- Progress Graph Visualization ---
         async function showProgressGraph() {
             if (!currentUser) return;
-            
             progressModalEl.classList.remove('hidden');
             progressModalEl.classList.add('flex');
-            
             const userRef = doc(db, "users", currentUser.uid);
             const userDoc = await getDoc(userRef);
             const knowledgeState = userDoc.data().knowledgeState;
-
             const nodes = Object.keys(curriculum).map(key => {
                 const node = curriculum[key];
                 const mastery = knowledgeState[key]?.mastery_probability || 0;
-                let color = '#9E9E9E'; // Gray for not started
-                if (mastery === 1.0) {
-                    color = '#4CAF50'; // Green for mastered
-                } else if (key === currentLessonId) {
-                    color = '#FFD700'; // Gold for current lesson
-                }
-
-                return {
-                    id: key,
-                    label: `${key}\n${node.conceptName}`,
-                    title: `Module: ${node.module}`,
-                    color: color
-                };
+                let color = '#9E9E9E';
+                if (mastery === 1.0) color = '#4CAF50';
+                else if (key === currentLessonId) color = '#FFD700';
+                return { id: key, label: `${key}\n${node.conceptName}`, title: `Module: ${node.module}`, color: color };
             });
-
             const edges = [];
             Object.keys(curriculum).forEach(key => {
-                const node = curriculum[key];
-                if (node.prerequisites) {
-                    node.prerequisites.forEach(prereqId => {
+                if (curriculum[key].prerequisites) {
+                    curriculum[key].prerequisites.forEach(prereqId => {
                         edges.push({ from: prereqId, to: key, arrows: 'to' });
                     });
                 }
             });
-
-            const data = {
-                nodes: new vis.DataSet(nodes),
-                edges: new vis.DataSet(edges)
-            };
-            const options = {
-                layout: { hierarchical: { direction: "LR", sortMethod: "directed" } },
-                nodes: { shape: 'box', margin: 10, font: { color: '#ffffff' } },
-                edges: { smooth: true, color: { color: '#848484' } },
-                interaction: { dragNodes: true, zoomView: true, dragView: true },
-                physics: { enabled: false }
-            };
+            const data = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
+            const options = { layout: { hierarchical: { direction: "LR", sortMethod: "directed" } }, nodes: { shape: 'box', margin: 10, font: { color: '#ffffff' } }, edges: { smooth: true, color: { color: '#848484' } }, interaction: { dragNodes: true, zoomView: true, dragView: true }, physics: { enabled: false } };
             new vis.Network(progressGraphEl, data, options);
         }
 
         // --- Event Listeners ---
         runCodeBtn.addEventListener('click', runCodeAndTests);
-        clearConsoleBtn.addEventListener('click', clearConsole);
-        closeModalBtn.addEventListener('click', () => {
-             progressModalEl.classList.add('hidden');
-             progressModalEl.classList.remove('flex');
-        });
+        clearConsoleBtn.addEventListener('click', () => { consoleOutputEl.textContent = 'Python Rugby Academy Console'; });
+        closeProgressModalBtn.addEventListener('click', () => { progressModalEl.classList.add('hidden'); progressModalEl.classList.remove('flex'); });
+        closeAuthModalBtn.addEventListener('click', () => { authModalEl.classList.add('hidden'); authModalEl.classList.remove('flex'); });
+        authForm.addEventListener('submit', handleAuthFormSubmit);
+        authToggleEl.addEventListener('click', (e) => { e.preventDefault(); toggleAuthMode(); });
+        googleSignInBtn.addEventListener('click', signInWithGoogle);
         codeEditorEl.addEventListener('keydown', (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-                e.preventDefault();
-                runCodeAndTests();
-            }
-            if (e.key === 'Tab') {
-                e.preventDefault();
-                const start = e.target.selectionStart;
-                const end = e.target.selectionEnd;
-                e.target.value = e.target.value.substring(0, start) + '    ' + e.target.value.substring(end);
-                e.target.selectionStart = e.target.selectionEnd = start + 4;
-            }
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); runCodeAndTests(); }
+            if (e.key === 'Tab') { e.preventDefault(); const start = e.target.selectionStart; const end = e.target.selectionEnd; e.target.value = e.target.value.substring(0, start) + '    ' + e.target.value.substring(end); e.target.selectionStart = e.target.selectionEnd = start + 4; }
         });
 
-        // --- PWA Service Worker ---
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(reg => console.log('SW registered:', reg))
-                    .catch(err => console.log('SW registration failed:', err));
+                navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW registered:', reg)).catch(err => console.log('SW registration failed:', err));
             });
         }
 
-        // --- Initialize App ---
-        document.addEventListener('DOMContentLoaded', () => {
-            // onAuthStateChanged handles the initial UI and lesson loading
-        });
+        document.addEventListener('DOMContentLoaded', () => {});
     </script>
 </body>
 </html>
