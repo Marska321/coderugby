@@ -474,6 +474,11 @@
             if (e.key === 'Tab') { e.preventDefault(); const start = e.target.selectionStart; const end = e.target.selectionEnd; e.target.value = e.target.value.substring(0, start) + '    ' + e.target.value.substring(end); e.target.selectionStart = e.target.selectionEnd = start + 4; }
         });
 
+        document.body.insertAdjacentHTML('beforeend', `
+            <button id="forceNextLessonBtn" style="position:fixed;bottom:10px;right:10px;z-index:9999;background:#FFD700;padding:10px;border-radius:8px;">Force Next Lesson</button>
+        `);
+        document.getElementById('forceNextLessonBtn').addEventListener('click', advanceToNextLesson);
+
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW registered:', reg)).catch(err => console.log('SW registration failed:', err));
