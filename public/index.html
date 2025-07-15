@@ -136,7 +136,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, FieldPath } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
         // The firebaseConfig object is now loaded from firebase-config.js
         // and is available as a global variable.
@@ -391,7 +391,7 @@
                 return;
             }
             const userRef = doc(db, "users", currentUser.uid);
-            const fieldToUpdate = `knowledgeState.${lessonId}.mastery_probability`;
+            const fieldToUpdate = new FieldPath("knowledgeState", lessonId, "mastery_probability");
             try {
                 appendToConsole("Updating mastery in Firestore...");
                 await updateDoc(userRef, { [fieldToUpdate]: 1.0 });
