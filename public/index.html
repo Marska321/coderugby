@@ -137,13 +137,13 @@
         import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
         const firebaseConfig = {
-  apiKey: "AIzaSyBB1RmG4tMM7MdlSvxSEm4uVodcjBnupTo",
-  authDomain: "python-rugby-coding.firebaseapp.com",
-  projectId: "python-rugby-coding",
-  storageBucket: "python-rugby-coding.firebasestorage.app",
-  messagingSenderId: "126358162035",
-  appId: "1:126358162035:web:23139b87ca2cab282ef806"
-};
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth();
@@ -151,9 +151,9 @@
         const provider = new GoogleAuthProvider();
 
         const curriculum = {
-          "1.1": { "module": "Core Fundamentals", "conceptName": "The print() Function", "rugbyAnalogy": "Referee's starting whistle", "masteryDefinition": "Display 'Hello, Rugby World!' to the console.", "prerequisites": [], "example": "print(\"The match is about to begin!\")", "hint": "Make sure the text you want to display is inside the parentheses and enclosed in quotes.", "tests": [ { "description": "Prints 'Hello, Rugby World!'", "test": "assert 'Hello, Rugby World!' in __output, 'The correct string was not printed'" } ] },
-          "1.2": { "module": "Core Fundamentals", "conceptName": "Variables", "rugbyAnalogy": "The scoreboard", "masteryDefinition": "Declare a variable named 'home_score' and assign it the value 10.", "prerequisites": ["1.1"], "example": "away_score = 5", "hint": "Use the equals sign (=) to assign a value.", "tests": [ { "description": "'home_score' variable exists", "test": "assert 'home_score' in globals(), 'The variable home_score was not defined'" }, { "description": "'home_score' is 10", "test": "assert home_score == 10, f'Expected home_score to be 10, but got {home_score}'" } ] },
-          "1.3": { "module": "Core Fundamentals", "conceptName": "Data Types: Strings", "rugbyAnalogy": "Player names & team names", "masteryDefinition": "Declare a variable named 'team_name' and assign it the string 'Springboks'.", "prerequisites": ["1.2"], "example": "player_name = \"Siya Kolisi\"", "hint": "Remember to enclose the text in quotes.", "tests": [ { "description": "'team_name' variable exists", "test": "assert 'team_name' in globals()" }, { "description": "'team_name' is 'Springboks'", "test": "assert team_name == 'Springboks'" } ] },
+          "1.1": { "module": "Core Fundamentals", "conceptName": "The print() Function", "prerequisites": [], "example": "print(\"The match is about to begin!\")", "hint": "Make sure the text you want to display is inside the parentheses and enclosed in quotes.", "tests": [ { "description": "Prints 'Hello, Rugby World!'", "test": "assert 'Hello, Rugby World!' in __output, 'The correct string was not printed'" } ] },
+          "1.2": { "module": "Core Fundamentals", "conceptName": "Variables", "prerequisites": ["1.1"], "example": "away_score = 5", "hint": "Use the equals sign (=) to assign a value.", "tests": [ { "description": "'home_score' variable exists", "test": "assert 'home_score' in globals(), 'The variable home_score was not defined'" }, { "description": "'home_score' is 10", "test": "assert home_score == 10, f'Expected home_score to be 10, but got {home_score}'" } ] },
+          "1.3": { "module": "Core Fundamentals", "conceptName": "Data Types: Strings", "prerequisites": ["1.2"], "example": "player_name = \"Siya Kolisi\"", "hint": "Remember to enclose the text in quotes.", "tests": [ { "description": "'team_name' variable exists", "test": "assert 'team_name' in globals()" }, { "description": "'team_name' is 'Springboks'", "test": "assert team_name == 'Springboks'" } ] },
           "2.1": { "module": "Data Structures", "conceptName": "Lists", "prerequisites": ["1.3"], "example": "forwards = [\"Ox Nche\", \"Bongi Mbonambi\"]", "hint": "Use square brackets `[]` to create a list.", "masteryDefinition": "Create a list named 'forwards' with at least two player names.", "tests": [ { "description": "List 'forwards' exists and is a list", "test": "assert 'forwards' in globals() and isinstance(forwards, list)" }, { "description": "'forwards' has at least 2 players", "test": "assert len(forwards) >= 2" } ] }
         };
 
@@ -307,20 +307,9 @@
 
         function determineNextLesson(knowledgeState) {
             for (const lessonId in curriculum) {
-                // Ensure the lesson exists in the user's knowledge state
-                if (knowledgeState && knowledgeState[lessonId]) {
-                    if (knowledgeState[lessonId].mastery_probability < 1.0) {
-                        const lesson = curriculum[lessonId];
-                        const prerequisitesMet = lesson.prerequisites.every(prereqId => 
-                            knowledgeState[prereqId] && knowledgeState[prereqId].mastery_probability === 1.0
-                        );
-                        if (prerequisitesMet) return lessonId;
-                    }
-                } else {
-                    // This can happen if the curriculum was updated after the user was created.
-                    // We can assume they haven't started it.
+                if (knowledgeState && knowledgeState[lessonId] && knowledgeState[lessonId].mastery_probability < 1.0) {
                     const lesson = curriculum[lessonId];
-                     const prerequisitesMet = lesson.prerequisites.every(prereqId => 
+                    const prerequisitesMet = lesson.prerequisites.every(prereqId => 
                         knowledgeState[prereqId] && knowledgeState[prereqId].mastery_probability === 1.0
                     );
                     if (prerequisitesMet) return lessonId;
@@ -393,7 +382,7 @@
             updateTestListUI(lesson.tests, testResults);
             if (testResults.every(res => res === true)) {
                  appendToConsole('Great job! You\'ve mastered this concept. 🏉');
-                 saveProgress(currentLessonId);
+                 await saveProgress(currentLessonId); 
                  runCodeBtn.classList.add('hidden');
                  nextLessonBtn.classList.remove('hidden');
             } else {
