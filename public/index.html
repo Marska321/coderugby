@@ -324,6 +324,7 @@
         }
 
         async function runCodeAndTests() {
+            console.log("runCodeAndTests called, currentLessonId:", currentLessonId, typeof currentLessonId);
             if (!pyodide || !currentLessonId) { appendToConsole("Environment not ready."); return; }
             runCodeBtn.disabled = true;
             appendToConsole('\n--- Running Code & Tests ---');
