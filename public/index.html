@@ -379,43 +379,38 @@
             updateTestListUI(lesson.tests, testResults);
             if (testResults.every(res => res === true)) {
                  appendToConsole('Great job! You\'ve mastered this concept. 🏉');
-                 await saveProgress(currentLessonId); 
-                 runCodeBtn.classList.add('hidden');
-                 nextLessonBtn.classList.remove('hidden');
+                 await saveAndAdvance(currentLessonId); 
             } else {
                  appendToConsole('Not quite. Check the failed tests and try again.');
                  runCodeBtn.disabled = false;
             }
         }
 
-        async function saveProgress(lessonId) {
+        async function saveAndAdvance(lessonId) {
             if (!currentUser) return;
             const userRef = doc(db, "users", currentUser.uid);
             const fieldToUpdate = `knowledgeState.${lessonId}.mastery_probability`;
             try {
+                // 1. Save the progress
                 await updateDoc(userRef, { [fieldToUpdate]: 1.0 });
                 appendToConsole(`Progress saved for lesson ${lessonId}!`);
-            } catch (error) {
-                console.error("Error saving progress: ", error);
-            }
-        }
 
-        async function advanceToNextLesson() {
-            if (!currentUser) return;
-            try {
-                const userRef = doc(db, "users", currentUser.uid);
+                // 2. Get the fresh data from the server
                 const userDoc = await getDoc(userRef);
-                const nextLessonId = determineNextLesson(userDoc.data().knowledgeState);
+                const knowledgeState = userDoc.data().knowledgeState;
+
+                // 3. Determine and load the next lesson based on the fresh data
+                const nextLessonId = determineNextLesson(knowledgeState);
                 if (nextLessonId) {
                     loadLesson(nextLessonId);
                 } else {
                     lessonContentEl.innerHTML = `<p class="text-green-600 font-bold">Congratulations! You have completed all available lessons!</p>`;
                     runCodeBtn.disabled = true;
-                    nextLessonBtn.classList.add('hidden');
                 }
             } catch (error) {
-                console.error("Error advancing lesson: ", error);
-                appendToConsole("Could not load the next lesson.");
+                console.error("Error saving or advancing: ", error);
+                appendToConsole("Could not save progress or load the next lesson.");
+                runCodeBtn.disabled = false; // Re-enable button on error
             }
         }
 
@@ -449,7 +444,6 @@
 
         // --- Event Listeners ---
         runCodeBtn.addEventListener('click', runCodeAndTests);
-        nextLessonBtn.addEventListener('click', advanceToNextLesson);
         clearConsoleBtn.addEventListener('click', () => { consoleOutputEl.textContent = 'Python Rugby Academy Console'; });
         closeProgressModalBtn.addEventListener('click', () => { progressModalEl.classList.add('hidden'); progressModalEl.classList.remove('flex'); });
         closeAuthModalBtn.addEventListener('click', () => { authModalEl.classList.add('hidden'); authModalEl.classList.remove('flex'); });
