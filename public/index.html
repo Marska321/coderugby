@@ -138,9 +138,6 @@
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, updateDoc, FieldPath } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
-        // The firebaseConfig object is now loaded from firebase-config.js
-        // and is available as a global variable.
-
         const app = initializeApp(firebaseConfig);
         const auth = getAuth();
         const db = getFirestore(app);
@@ -208,7 +205,6 @@
             try {
                 const userRef = doc(db, "users", user.uid);
                 const userDoc = await getDoc(userRef);
-                let userData;
 
                 if (!userDoc.exists()) {
                     appendToConsole("Welcome! Creating your player profile...");
@@ -216,25 +212,24 @@
                     Object.keys(curriculum).forEach(key => {
                         initialKnowledgeState[key] = { mastery_probability: 0.0, last_reviewed: null };
                     });
-                    userData = {
+                    userKnowledgeState = initialKnowledgeState;
+                    await setDoc(userRef, {
                         displayName: user.displayName || user.email.split('@')[0],
                         email: user.email,
                         createdAt: new Date(),
                         xp: 0,
-                        knowledgeState: initialKnowledgeState
-                    };
-                    await setDoc(userRef, userData);
+                        knowledgeState: userKnowledgeState
+                    });
                 } else {
-                    userData = userDoc.data();
-                    appendToConsole(`Welcome back, ${userData.displayName}! Loading your training...`);
+                    userKnowledgeState = userDoc.data().knowledgeState;
+                    appendToConsole(`Welcome back, ${userDoc.data().displayName}! Loading your training...`);
                 }
-                userKnowledgeState = userData.knowledgeState; // <-- Save locally
-                await advanceToNextLesson();
+                
+                advanceToNextLesson();
 
             } catch (error) {
                 console.error("Firestore Error:", error);
                 appendToConsole(`Error loading user profile: ${error.message}`);
-                appendToConsole(`Please check your Firestore security rules.`);
             }
         }
 
@@ -247,14 +242,8 @@
             const email = authEmailEl.value;
             const password = authPasswordEl.value;
             authErrorEl.classList.add('hidden');
-
-            if (isLoginMode) {
-                signInWithEmailAndPassword(auth, email, password)
-                    .catch(error => showAuthError(error.message));
-            } else {
-                createUserWithEmailAndPassword(auth, email, password)
-                    .catch(error => showAuthError(error.message));
-            }
+            if (isLoginMode) { signInWithEmailAndPassword(auth, email, password).catch(error => showAuthError(error.message)); } 
+            else { createUserWithEmailAndPassword(auth, email, password).catch(error => showAuthError(error.message)); }
         }
 
         function toggleAuthMode() {
@@ -286,15 +275,8 @@
         }
 
         function updateUIForGuest() {
-            userActionsEl.innerHTML = `
-                <button id="authTriggerBtn" class="bg-rugby-green hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
-                    Login / Sign Up
-                </button>
-            `;
-            document.getElementById('authTriggerBtn').addEventListener('click', () => {
-                authModalEl.classList.remove('hidden');
-                authModalEl.classList.add('flex');
-            });
+            userActionsEl.innerHTML = `<button id="authTriggerBtn" class="bg-rugby-green hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">Login / Sign Up</button>`;
+            document.getElementById('authTriggerBtn').addEventListener('click', () => { authModalEl.classList.remove('hidden'); authModalEl.classList.add('flex'); });
             lessonContentEl.innerHTML = `<p class="text-gray-600">Please sign in to get your personalized daily training lesson.</p>`;
             testListEl.innerHTML = '';
             codeEditorEl.value = '';
@@ -302,14 +284,12 @@
         }
 
         function determineNextLesson(knowledgeState) {
-            console.log("determineNextLesson: knowledgeState", knowledgeState);
             for (const lessonId in curriculum) {
                 if (knowledgeState && knowledgeState[lessonId] && knowledgeState[lessonId].mastery_probability < 1.0) {
                     const lesson = curriculum[lessonId];
-                    const prerequisitesMet = lesson.prerequisites.every(prereqId =>
+                    const prerequisitesMet = lesson.prerequisites.every(prereqId => 
                         knowledgeState[prereqId] && knowledgeState[prereqId].mastery_probability === 1.0
                     );
-                    console.log(`Lesson ${lessonId}: prerequisitesMet=${prerequisitesMet}`);
                     if (prerequisitesMet) return lessonId;
                 }
             }
@@ -319,17 +299,11 @@
         function loadLesson(lessonId) {
             currentLessonId = lessonId;
             const lesson = curriculum[lessonId];
-            if (!lesson) {
-                appendToConsole(`Error: Lesson with ID ${lessonId} not found in curriculum.`);
-                return;
-            };
-
+            if (!lesson) { appendToConsole(`Error: Lesson with ID ${lessonId} not found.`); return; };
             lessonContentEl.innerHTML = `<h3 class="text-lg font-semibold text-gray-800 mb-3">${lesson.conceptName || 'N/A'}</h3><div class="mb-4"><h4 class="text-md font-medium text-gray-700 mb-2">🏉 Rugby Analogy</h4><p class="text-gray-600 leading-relaxed">${lesson.rugbyAnalogy || 'No analogy provided.'}</p></div><div class="mb-4"><h4 class="text-md font-medium text-gray-700 mb-2">🎯 Challenge</h4><p class="text-gray-800 font-medium">${lesson.masteryDefinition || 'No challenge provided.'}</p></div><div class="mb-4"><h4 class="text-md font-medium text-gray-700 mb-2">📝 Example</h4><pre class="text-sm">${lesson.example || ''}</pre></div><button id="hintBtn" class="bg-rugby-gold hover:bg-yellow-500 text-gray-800 px-4 py-2 rounded-md text-sm font-medium transition-colors mb-2">💡 Need a Hint?</button><div id="hintContent" class="hint-content hidden"><p class="text-gray-800">${lesson.hint || 'No hint available.'}</p></div>`;
             updateTestListUI(lesson.tests);
             codeEditorEl.value = `# Solve the challenge for: ${lesson.conceptName}\n\n`;
-            
             runCodeBtn.disabled = false;
-            
             document.getElementById('hintBtn').addEventListener('click', () => document.getElementById('hintContent').classList.toggle('hidden'));
             appendToConsole(`\n--- Lesson ${lessonId} loaded: ${lesson.conceptName} ---`);
         }
@@ -365,71 +339,42 @@
                         let testCode = `${userCode}\n\n__output = """${capturedOutput}"""\n${test.test}`;
                         await pyodide.runPythonAsync(testCode);
                         testResults.push(true);
-                    } catch (e) {
-                        testResults.push(false);
-                        appendToConsole(`Test Failed: ${e.message}`);
-                    }
+                    } catch (e) { testResults.push(false); appendToConsole(`Test Failed: ${e.message}`); }
                 }
                 if (capturedOutput) appendToConsole(`Output:\n${capturedOutput.trim()}`);
-            } catch (e) {
-                appendToConsole(`Code Error: ${e.message}`);
-                lesson.tests.forEach(() => testResults.push(false));
-            }
+            } catch (e) { appendToConsole(`Code Error: ${e.message}`); lesson.tests.forEach(() => testResults.push(false)); }
             updateTestListUI(lesson.tests, testResults);
             if (testResults.every(res => res === true)) {
                  appendToConsole('Great job! You\'ve mastered this concept. 🏉');
-                 await saveAndAdvance(currentLessonId); 
+                 await saveProgress(currentLessonId); 
             } else {
                  appendToConsole('Not quite. Check the failed tests and try again.');
                  runCodeBtn.disabled = false;
             }
         }
 
-        async function saveAndAdvance(lessonId) {
-            if (!currentUser) {
-                appendToConsole("No current user in saveAndAdvance");
-                return;
-            }
+        async function saveProgress(lessonId) {
+            if (!currentUser) return;
             const userRef = doc(db, "users", currentUser.uid);
             const fieldToUpdate = new FieldPath("knowledgeState", lessonId, "mastery_probability");
             try {
-                appendToConsole("Updating mastery in Firestore...");
                 await updateDoc(userRef, { [fieldToUpdate]: 1.0 });
-                appendToConsole("Mastery updated, fetching latest knowledge state...");
-                const userDoc = await getDoc(userRef);
-                userKnowledgeState = userDoc.data().knowledgeState;
+                userKnowledgeState[lessonId].mastery_probability = 1.0; // Update local state
                 appendToConsole(`Progress saved for lesson ${lessonId}!`);
-                await advanceToNextLesson();
+                advanceToNextLesson(); // Advance after successful save
             } catch (error) {
-                console.error("Error saving or advancing: ", error);
-                appendToConsole("Could not save progress or load the next lesson: " + error.message);
+                console.error("Error saving progress: ", error);
                 runCodeBtn.disabled = false;
             }
         }
 
-        async function advanceToNextLesson() {
-            appendToConsole("advanceToNextLesson called");
-            if (!currentUser) {
-                appendToConsole("No current user in advanceToNextLesson");
-                return;
-            }
-            try {
-                const userRef = doc(db, "users", currentUser.uid);
-                const userDoc = await getDoc(userRef);
-                const knowledgeState = userDoc.data().knowledgeState;
-                userKnowledgeState = knowledgeState;
-                appendToConsole("advanceToNextLesson: knowledgeState = " + JSON.stringify(knowledgeState));
-                const nextLessonId = determineNextLesson(knowledgeState);
-                appendToConsole("advanceToNextLesson: nextLessonId = " + nextLessonId);
-                if (nextLessonId) {
-                    loadLesson(nextLessonId);
-                } else {
-                    lessonContentEl.innerHTML = `<p class="text-green-600 font-bold">Congratulations! You have completed all available lessons!</p>`;
-                    runCodeBtn.disabled = true;
-                }
-            } catch (error) {
-                console.error("Error advancing lesson: ", error);
-                appendToConsole("Could not load the next lesson: " + error.message);
+        function advanceToNextLesson() {
+            const nextLessonId = determineNextLesson(userKnowledgeState);
+            if (nextLessonId) {
+                loadLesson(nextLessonId);
+            } else {
+                lessonContentEl.innerHTML = `<p class="text-green-600 font-bold">Congratulations! You have completed all available lessons!</p>`;
+                runCodeBtn.disabled = true;
             }
         }
 
@@ -473,11 +418,6 @@
             if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); runCodeAndTests(); }
             if (e.key === 'Tab') { e.preventDefault(); const start = e.target.selectionStart; const end = e.target.selectionEnd; e.target.value = e.target.value.substring(0, start) + '    ' + e.target.value.substring(end); e.target.selectionStart = e.target.selectionEnd = start + 4; }
         });
-
-        document.body.insertAdjacentHTML('beforeend', `
-            <button id="forceNextLessonBtn" style="position:fixed;bottom:10px;right:10px;z-index:9999;background:#FFD700;padding:10px;border-radius:8px;">Force Next Lesson</button>
-        `);
-        document.getElementById('forceNextLessonBtn').addEventListener('click', advanceToNextLesson);
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
