@@ -404,14 +404,11 @@
         async function advanceToNextLesson() {
             if (!currentUser) return;
             try {
-                // Use local state if available
-                let knowledgeState = userKnowledgeState;
-                if (!knowledgeState) {
-                    const userRef = doc(db, "users", currentUser.uid);
-                    const userDoc = await getDoc(userRef);
-                    knowledgeState = userDoc.data().knowledgeState;
-                    userKnowledgeState = knowledgeState;
-                }
+                // Always fetch fresh state from Firestore
+                const userRef = doc(db, "users", currentUser.uid);
+                const userDoc = await getDoc(userRef);
+                const knowledgeState = userDoc.data().knowledgeState;
+                userKnowledgeState = knowledgeState;
                 // Debug: log the current knowledge state
                 console.log("advanceToNextLesson: knowledgeState", JSON.stringify(knowledgeState, null, 2));
                 const nextLessonId = determineNextLesson(knowledgeState);
