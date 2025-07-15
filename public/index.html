@@ -355,6 +355,7 @@
 
         async function saveProgress(lessonId) {
             if (!currentUser) return;
+            console.log("saveProgress called with lessonId:", lessonId, typeof lessonId);
             const userRef = doc(db, "users", currentUser.uid);
             const fieldToUpdate = new FieldPath("knowledgeState", lessonId, "mastery_probability");
             try {
