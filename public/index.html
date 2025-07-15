@@ -302,12 +302,14 @@
         }
 
         function determineNextLesson(knowledgeState) {
+            console.log("determineNextLesson: knowledgeState", knowledgeState);
             for (const lessonId in curriculum) {
                 if (knowledgeState && knowledgeState[lessonId] && knowledgeState[lessonId].mastery_probability < 1.0) {
                     const lesson = curriculum[lessonId];
-                    const prerequisitesMet = lesson.prerequisites.every(prereqId => 
+                    const prerequisitesMet = lesson.prerequisites.every(prereqId =>
                         knowledgeState[prereqId] && knowledgeState[prereqId].mastery_probability === 1.0
                     );
+                    console.log(`Lesson ${lessonId}: prerequisitesMet=${prerequisitesMet}`);
                     if (prerequisitesMet) return lessonId;
                 }
             }
@@ -404,14 +406,13 @@
         async function advanceToNextLesson() {
             if (!currentUser) return;
             try {
-                // Always fetch fresh state from Firestore
                 const userRef = doc(db, "users", currentUser.uid);
                 const userDoc = await getDoc(userRef);
                 const knowledgeState = userDoc.data().knowledgeState;
                 userKnowledgeState = knowledgeState;
-                // Debug: log the current knowledge state
                 console.log("advanceToNextLesson: knowledgeState", JSON.stringify(knowledgeState, null, 2));
                 const nextLessonId = determineNextLesson(knowledgeState);
+                console.log("advanceToNextLesson: nextLessonId", nextLessonId);
                 if (nextLessonId) {
                     loadLesson(nextLessonId);
                 } else {
