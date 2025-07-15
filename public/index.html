@@ -386,33 +386,41 @@
         }
 
         async function saveAndAdvance(lessonId) {
-            if (!currentUser) return;
+            if (!currentUser) {
+                appendToConsole("No current user in saveAndAdvance");
+                return;
+            }
             const userRef = doc(db, "users", currentUser.uid);
             const fieldToUpdate = `knowledgeState.${lessonId}.mastery_probability`;
             try {
+                appendToConsole("Updating mastery in Firestore...");
                 await updateDoc(userRef, { [fieldToUpdate]: 1.0 });
-                // Fetch fresh state from Firestore to ensure up-to-date knowledge
+                appendToConsole("Mastery updated, fetching latest knowledge state...");
                 const userDoc = await getDoc(userRef);
                 userKnowledgeState = userDoc.data().knowledgeState;
                 appendToConsole(`Progress saved for lesson ${lessonId}!`);
                 await advanceToNextLesson();
             } catch (error) {
                 console.error("Error saving or advancing: ", error);
-                appendToConsole("Could not save progress or load the next lesson.");
+                appendToConsole("Could not save progress or load the next lesson: " + error.message);
                 runCodeBtn.disabled = false;
             }
         }
 
         async function advanceToNextLesson() {
-            if (!currentUser) return;
+            appendToConsole("advanceToNextLesson called");
+            if (!currentUser) {
+                appendToConsole("No current user in advanceToNextLesson");
+                return;
+            }
             try {
                 const userRef = doc(db, "users", currentUser.uid);
                 const userDoc = await getDoc(userRef);
                 const knowledgeState = userDoc.data().knowledgeState;
                 userKnowledgeState = knowledgeState;
-                console.log("advanceToNextLesson: knowledgeState", JSON.stringify(knowledgeState, null, 2));
+                appendToConsole("advanceToNextLesson: knowledgeState = " + JSON.stringify(knowledgeState));
                 const nextLessonId = determineNextLesson(knowledgeState);
-                console.log("advanceToNextLesson: nextLessonId", nextLessonId);
+                appendToConsole("advanceToNextLesson: nextLessonId = " + nextLessonId);
                 if (nextLessonId) {
                     loadLesson(nextLessonId);
                 } else {
@@ -421,7 +429,7 @@
                 }
             } catch (error) {
                 console.error("Error advancing lesson: ", error);
-                appendToConsole("Could not load the next lesson.");
+                appendToConsole("Could not load the next lesson: " + error.message);
             }
         }
 
