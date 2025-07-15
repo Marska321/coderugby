@@ -178,6 +178,7 @@
         let currentUser = null;
         let pyodide = null;
         let isLoginMode = true;
+        let userKnowledgeState = null;
 
         async function main() {
             appendToConsole("Initializing Python environment...");
@@ -227,7 +228,7 @@
                     userData = userDoc.data();
                     appendToConsole(`Welcome back, ${userData.displayName}! Loading your training...`);
                 }
-                
+                userKnowledgeState = userData.knowledgeState; // <-- Save locally
                 await advanceToNextLesson();
 
             } catch (error) {
@@ -388,6 +389,10 @@
             const fieldToUpdate = `knowledgeState.${lessonId}.mastery_probability`;
             try {
                 await updateDoc(userRef, { [fieldToUpdate]: 1.0 });
+                // Update local state immediately
+                if (userKnowledgeState && userKnowledgeState[lessonId]) {
+                    userKnowledgeState[lessonId].mastery_probability = 1.0;
+                }
                 appendToConsole(`Progress saved for lesson ${lessonId}!`);
                 await advanceToNextLesson();
             } catch (error) {
@@ -400,9 +405,15 @@
         async function advanceToNextLesson() {
             if (!currentUser) return;
             try {
-                const userRef = doc(db, "users", currentUser.uid);
-                const userDoc = await getDoc(userRef);
-                const nextLessonId = determineNextLesson(userDoc.data().knowledgeState);
+                // Use local state if available
+                let knowledgeState = userKnowledgeState;
+                if (!knowledgeState) {
+                    const userRef = doc(db, "users", currentUser.uid);
+                    const userDoc = await getDoc(userRef);
+                    knowledgeState = userDoc.data().knowledgeState;
+                    userKnowledgeState = knowledgeState;
+                }
+                const nextLessonId = determineNextLesson(knowledgeState);
                 if (nextLessonId) {
                     loadLesson(nextLessonId);
                 } else {
