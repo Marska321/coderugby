@@ -287,7 +287,7 @@
             for (const lessonId in curriculum) {
                 if (knowledgeState && knowledgeState[lessonId] && knowledgeState[lessonId].mastery_probability < 1.0) {
                     const lesson = curriculum[lessonId];
-                    const prerequisitesMet = lesson.prerequisites.every(prereqId => 
+                    const prerequisitesMet = !lesson.prerequisites || lesson.prerequisites.every(prereqId =>
                         knowledgeState[prereqId] && knowledgeState[prereqId].mastery_probability === 1.0
                     );
                     if (prerequisitesMet) return lessonId;
