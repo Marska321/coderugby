@@ -389,10 +389,9 @@
             const fieldToUpdate = `knowledgeState.${lessonId}.mastery_probability`;
             try {
                 await updateDoc(userRef, { [fieldToUpdate]: 1.0 });
-                // Update local state immediately
-                if (userKnowledgeState && userKnowledgeState[lessonId]) {
-                    userKnowledgeState[lessonId].mastery_probability = 1.0;
-                }
+                // Fetch fresh state from Firestore to ensure up-to-date knowledge
+                const userDoc = await getDoc(userRef);
+                userKnowledgeState = userDoc.data().knowledgeState;
                 appendToConsole(`Progress saved for lesson ${lessonId}!`);
                 await advanceToNextLesson();
             } catch (error) {
@@ -413,6 +412,8 @@
                     knowledgeState = userDoc.data().knowledgeState;
                     userKnowledgeState = knowledgeState;
                 }
+                // Debug: log the current knowledge state
+                console.log("advanceToNextLesson: knowledgeState", JSON.stringify(knowledgeState, null, 2));
                 const nextLessonId = determineNextLesson(knowledgeState);
                 if (nextLessonId) {
                     loadLesson(nextLessonId);
